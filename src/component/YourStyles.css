@@ -1,0 +1,38 @@
+.table-container {
+  margin: 80px;
+  background: linear-gradient(0deg, #ffffff, #ffffff),
+    linear-gradient(0deg, #e5e9eb, #e5e9eb);
+  border: 1px solid #e5e9eb;
+  overflow: auto;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.custom-table th,
+.custom-table td {
+  border: 1px solid #e5e9eb;
+  padding: 8px;
+}
+
+.edit-button,
+.delete-button {
+  width: 78px;
+  height: 26px;
+  border: none;
+  border-radius: 4px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.edit-button {
+  background-color: #fcc822;
+  color: #ffffff;
+}
+
+.delete-button {
+  background-color: #ff000f;
+  color: #ffffff;
+}

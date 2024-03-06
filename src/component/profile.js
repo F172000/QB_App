@@ -36,7 +36,8 @@ export default function Profile() {
   const [phone, setphone] = useState("");
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
-  const [profileURL, setprofileURL] = useState("");
+  const [profileURL, setprofileURL] = useState(null);
+  console.log(profileURL,"profileurl");
   const auth = getAuth();
 
   useEffect(() => {
@@ -120,7 +121,7 @@ export default function Profile() {
                 marginRight: isSmallScreen ? 0 : 50,
               }}
               value={profileURL}
-              onChange={(e) => setprofileURL(e.target.value)}
+              onChange={(e) => setprofileURL(e.target.files[0])}
             ></img>
 
             <Button

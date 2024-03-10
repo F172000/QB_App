@@ -72,7 +72,7 @@ export default function Mainnavbar() {
           >
             <NavLink
               style={{ marginBottom: "10px" }}
-              to="/home"
+              to="/"
               text="Home"
               activeLink={activeLink}
               onClick={closeMenu}
@@ -106,7 +106,7 @@ export default function Mainnavbar() {
 
   const renderDesktopMenu = () => (
     <div className="links" style={{ display: "flex" }}>
-      <NavLink to="/home" text="Home" activeLink={activeLink} />
+      <NavLink to="/" text="Home" activeLink={activeLink} />
       <NavLink
         to="/test-knowledge"
         text="Test My Knowledge"

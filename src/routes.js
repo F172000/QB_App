@@ -17,9 +17,9 @@ import PaymentDetails from "./component/PaymentDetails";
 
 var routes = [
   {
-    path: "/home",
+    path: "/",
     component: Home,
-    layout: "admin",
+    layout: "auth",
   },
   {
     path: "/payment",
@@ -35,7 +35,7 @@ var routes = [
   //   isMenu: false,
   // },
   {
-    path: "/",
+    path: "/login",
     component: Login,
     layout: "auth",
   },

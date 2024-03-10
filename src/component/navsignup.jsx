@@ -75,7 +75,7 @@ export default function Snavbar() {
               >
                 <MenuItem onClick={handleMobileMenuClose}>
                   <a
-                    href="/"
+                    href="/login"
                     style={{
                       textDecoration: "none",
                       fontSize: "13px",
@@ -102,9 +102,9 @@ export default function Snavbar() {
           ) : (
             // For Desktop
             <div className="links">
-              <a href="/">
+              <a href="/login">
                 <Button
-                  href="/"
+                  href="/login"
                   style={{
                     //  backgroundColor: "#FCC822",
 

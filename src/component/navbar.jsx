@@ -75,7 +75,7 @@ export default function Navbar() {
               >
                 <MenuItem onClick={handleMobileMenuClose}>
                   <a
-                    href="/Login"
+                    href="/login"
                     style={{ textDecoration: "none", color: "black" }}
                   >
                     LOG IN
@@ -83,7 +83,7 @@ export default function Navbar() {
                 </MenuItem>
                 <MenuItem onClick={handleMobileMenuClose}>
                   <a
-                    href="/Signup"
+                    href="/signup"
                     style={{ textDecoration: "none", color: "black" }}
                   >
                     SIGN UP
@@ -94,9 +94,9 @@ export default function Navbar() {
           ) : (
             // For Desktop
             <div className="links">
-              <a href="/Login">
+              <a href="/login">
                 <Button
-                  href="/Login"
+                  href="/login"
                   style={{
                     color: "black",
                     marginRight: "10px",
@@ -105,9 +105,9 @@ export default function Navbar() {
                   LOG IN
                 </Button>
               </a>
-              <a href="/Signup">
+              <a href="/signup">
                 <Button
-                  href="/Signup"
+                  href="/signup"
                   style={{ backgroundColor: "#FCC822", color: "black" }}
                 >
                   SIGN UP

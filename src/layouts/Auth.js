@@ -6,9 +6,9 @@ const Auth = (props) => {
   const { user } = useSelector((state) => state.auth);
   const navigate=useNavigate();
 
-  // if (user) {
-  //   navigate("/home");
-  // }
+  if (user) {
+    navigate("/home");
+  }
   return (
     <>
       <div>

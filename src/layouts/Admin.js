@@ -6,11 +6,11 @@ import { useNavigate } from "react-router-dom";
 import Footer from "../component/footer";
 const Admin = (props) => {
   const navigate = useNavigate();
-  // const { user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
 
-  // if (!user) {
-  //   navigate("/");
-  // }
+  if (!user) {
+    navigate("/");
+  }
   return (
     <>
         {props.children}

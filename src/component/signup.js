@@ -6,55 +6,23 @@ import {
   createTheme,
   Box,
   Typography,
-  useMediaQuery,
+  useMediaQuery
 } from "@mui/material";
 import image from "../assets/images/image.png";
 import logo from "../assets/images/header.png";
-
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  setDoc,
-  doc,
-} from "firebase/firestore";
-
+import { RegisterUser } from "../redux/AuthThunk";
 import { useNavigate,Link } from "react-router-dom";
-
+import { useDispatch } from "react-redux";
+import { Spinner } from "react-bootstrap";
 const theme = createTheme();
 export default function Signup() {
+  const dispatch=useDispatch();
   const navigate = useNavigate();
-  const [name, setname] = useState("");
-  const [phone, setphone] = useState("");
-  const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
-  const signup = async (e) => {
-    e.preventDefault();
-    try {
-      const auth = getAuth();
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user.uid;
-      navigate("/profile");
-      console.log(user);
-      const docRef = await addDoc(collection(db, "users"), {
-        uid: user,
-        name: name,
-        phone: phone,
-        email: email,
-        password: password,
-      });
-
-      alert("User created successfully");
-    } catch (error) {
-      console.error("Error creating user: ", error);
-      alert("Error creating user: " + error.message);
-    }
-  };
+  const [loading,setloading]=useState(false);
+  const [Name, setName] = useState("");
+  const [Phone, setPhone] = useState("");
+  const [Email, setEmail] = useState("");
+  const [Password, setPassword] = useState("");
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
@@ -96,39 +64,63 @@ export default function Signup() {
               paddingLeft: "15px",
             }}
           >
+            <form onSubmit={(e)=>{
+              e.preventDefault();
+              dispatch(
+                RegisterUser(
+                  Name,
+                  Email,
+                  Phone,
+                  Password,
+                  setloading
+                )
+              );
+            }}>
             <TextField
               fullWidth
               id="outlined-basic"
               label="Name"
-              value={name}
-              onChange={(e) => setname(e.target.value)}
+              required
+              value={Name}
+              onChange={(e) => setName(e.target.value)}
               style={{ paddingBottom: "10px" }}
             />
             <TextField
               fullWidth
               id="outlined-basic"
+              required
               label="Phone Number"
               type="number"
-              value={phone}
-              onChange={(e) => setphone(e.target.value)}
+              sx={{
+                "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+                                         display: "none",
+                                       },
+               "& input[type=number]": {
+                                         MozAppearance: "textfield",
+                                       },
+               }}
+              value={Phone}
+              onChange={(e) => setPhone(e.target.value)}
               style={{ paddingBottom: "10px" }}
             />
 
             <TextField
               fullWidth
+              required
               id="outlined-basic"
               label="Email Address"
-              value={email}
-              onChange={(e) => setemail(e.target.value)}
+              value={Email}
+              onChange={(e) => setEmail(e.target.value)}
               style={{ paddingBottom: "10px" }}
             />
             <TextField
               fullWidth
+              required
               id="outlined-password-input"
               label="Password"
               type="password"
-              value={password}
-              onChange={(e) => setpassword(e.target.value)}
+              value={Password}
+              onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
             />
             <Typography
@@ -149,7 +141,8 @@ export default function Signup() {
               style={{ textAlign: "left" }}
             >
               <Button
-                onClick={signup}
+               type="submit"
+               disabled={loading}
                 style={{
                   backgroundColor: "#FCC822",
                   color: "black",
@@ -163,8 +156,9 @@ export default function Signup() {
                   font: "Poppins",
                 }}
               >
-                <b>Signup</b>
+                {loading? <Spinner size="sm"/>:"Signup"}
               </Button>{" "}
+             
               <Button
                 onClick={() => navigate("/")}
                 style={{
@@ -184,6 +178,7 @@ export default function Signup() {
                 Login
               </Button>
             </div>
+            </form>
           </Box>
         </div>
         <div className="col-md-6">

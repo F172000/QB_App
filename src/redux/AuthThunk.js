@@ -8,7 +8,7 @@ import {
   getDoc,
   query,
   where,
-  onSnapshot,
+  onSnapshot,serverTimestamp
 } from "firebase/firestore";
 import { db, auth } from "../config/firebase";
 import {
@@ -19,11 +19,11 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { PASSWORD_LOADER } from "./authSlice";
 export const RegisterUser =
-  (Name, Email, Password, setloading) => async (dispatch) => {
+  (Name, Email,Phone, Password, setloading) => async (dispatch) => {
     try{
       setloading(true);
-      if (!Name || !Email || !Password) {
-        toast.error("name email and password are not given");
+      if (!Name || !Email || !Password || !Phone) {
+        toast.error("name email Phone and password are not given");
         return;
       }
       const user = await createUserWithEmailAndPassword(auth, Email, Password)
@@ -42,13 +42,17 @@ export const RegisterUser =
         let result = await addDoc(collection(db, "users"), {
           name: Name,
           email: Email,
+          phone: Phone,
           uid: user.uid,
+          createdAt: serverTimestamp(),
+          payment_status:"pending",
+          image:''
         });
         if (result.id) {
           toast.success("Successfully Registered...");
           setloading(false);
      setTimeout(() => {
-      window.location.href = "/auth/login";
+      window.location.href = "/login";
      },3000); 
         }
       }
@@ -82,7 +86,7 @@ export const SignOutUser = () => async (dispatch) => {
   try {
     const result = localStorage.clear();
     console.log(result);
-    window.location.href = "/auth/login";
+    window.location.href = "/login";
   } catch (error) {
     console.log(error.message);
   }

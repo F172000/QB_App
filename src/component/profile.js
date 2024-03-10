@@ -16,6 +16,7 @@ import Image from "./images/image.png";
 import Navbar from "./navbar";
 import Mainnavbar from "./navbarmain";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import profile from '../component/images/profile.jpg'
 import {
   doc,
   getFirestore,
@@ -37,7 +38,8 @@ export default function Profile() {
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const [profileURL, setprofileURL] = useState(null);
-  console.log(profileURL,"profileurl");
+  const [image,setimage]=useState(null);
+  console.log(image,"image");
   const auth = getAuth();
 
   useEffect(() => {
@@ -111,7 +113,7 @@ export default function Profile() {
             }}
           >
             <img
-              src={Image}
+              src={profileURL || profile}
               width="100rem"
               height={"100rem"}
               style={{
@@ -120,8 +122,7 @@ export default function Profile() {
                 float: "center",
                 marginRight: isSmallScreen ? 0 : 50,
               }}
-              value={profileURL}
-              onChange={(e) => setprofileURL(e.target.files[0])}
+              // onChange={(e) => setprofileURL(e.target.files[0])}
             ></img>
 
             <Button
@@ -142,9 +143,10 @@ export default function Profile() {
                 marginRight: "0px",
               }}
               component="label"
+              onClick={(e)=>setimage(e.target.files)}
             >
               Upload Photo
-              <input hidden accept="image/*" multiple type="file" />
+              <input hidden accept="image/*" multiple type="file"  />
             </Button>
           </div>
 

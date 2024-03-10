@@ -52,7 +52,7 @@ export default function Home() {
               }}
             >
               <Button
-                href="/Uploadquebank"
+                href="/uploadquebank"
                 style={{
                   backgroundColor: "#fcc822",
                   color: "black",
@@ -74,7 +74,7 @@ export default function Home() {
               </Button>
 
               <Button
-                href="/Testknowledge"
+                href="/test-knowledge"
                 style={{
                   backgroundColor: "#fcc822",
                   color: "black",
@@ -111,7 +111,7 @@ export default function Home() {
                   maxWidth: isLargeScreen ? "30%" : "100%",
                   textAlign: "center",
                 }}
-                href="/Aibank"
+                href="/Ai-bank"
               >
                 ASK AI TO CREATE QUESTION BANK FROM YOUR DOCUMENT(.PDF OR .DOC)
               </Button>

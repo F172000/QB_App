@@ -72,28 +72,28 @@ export default function Mainnavbar() {
           >
             <NavLink
               style={{ marginBottom: "10px" }}
-              to="/"
+              to="/home"
               text="Home"
               activeLink={activeLink}
               onClick={closeMenu}
             />
             <NavLink
               style={{ marginBottom: "10px" }}
-              to="/Testknowledge"
+              to="/test-knowledge"
               text="Test My Knowledge"
               activeLink={activeLink}
               onClick={closeMenu}
             />
             <NavLink
               style={{ marginBottom: "20px" }}
-              to="/Uploadquebank"
+              to="/uploadquebank"
               text="Upload a Question Bank"
               activeLink={activeLink}
               onClick={closeMenu}
             />
             <NavLink
               style={{ marginBottom: "10px" }}
-              to="/Profile"
+              to="/profile"
               text="Profile"
               activeLink={activeLink}
               onClick={closeMenu}
@@ -106,18 +106,18 @@ export default function Mainnavbar() {
 
   const renderDesktopMenu = () => (
     <div className="links" style={{ display: "flex" }}>
-      <NavLink to="/" text="Home" activeLink={activeLink} />
+      <NavLink to="/home" text="Home" activeLink={activeLink} />
       <NavLink
-        to="/Testknowledge"
+        to="/test-knowledge"
         text="Test My Knowledge"
         activeLink={activeLink}
       />
       <NavLink
-        to="/Uploadquebank"
+        to="/uploadquebank"
         text="Upload a Question Bank"
         activeLink={activeLink}
       />
-      <NavLink to="/Profile" text="Profile" activeLink={activeLink} />
+      <NavLink to="/profile" text="Profile" activeLink={activeLink} />
     </div>
   );
 

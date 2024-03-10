@@ -28,7 +28,7 @@ export const authSlice = createSlice({
         toast.success("Signin Sucessfully.");
         state.loading = false;
         state.user = action.payload;
-        window.location.href = "/admin/index";
+        window.location.href = "/profile";
       })
       .addCase(SignInUser.rejected, (state, action) => {
         state.loading = false;

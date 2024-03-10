@@ -10,46 +10,25 @@ import {
   Link,
 } from "@mui/material";
 import image from "../assets/images/image.png";
+import { auth } from "../config/firebase";
 import { useNavigate } from "react-router-dom";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  setDoc,
-  doc,
-} from "firebase/firestore";
+import {toast} from 'react-toastify';
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { SignInUser } from "../redux/AuthThunk";
 import logo from "../assets/images/header.png";
+import { useDispatch } from "react-redux";
+import { Spinner } from "react-bootstrap";
 
 const theme = createTheme();
 export default function Login() {
+  const dispatch=useDispatch();
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-
+  const [loading,setloading]=useState(false);
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
 
-  const login = async (e) => {
-    e.preventDefault();
 
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-
-        const user = userCredential.user;
-
-      navigate("/Profile");
-        // ...
-      })
-      .catch((error) => {
-        alert(error.message);
-        setemail("");
-        setpassword("");
-        const errorCode = error.code;
-        const errorMessage = error.message;
-      });
-  };
 
   return (
     <div style={{ overflow: "hidden" }}>
@@ -93,8 +72,25 @@ export default function Login() {
               paddingLeft: "15px",
             }}
           >
+            <form onSubmit={async(e)=>{
+              e.preventDefault();
+              e.preventDefault();
+                setloading(true);
+                // dispatch(SignInUser(email, password,setloading));
+                await signInWithEmailAndPassword(auth, email, password)
+                  .then((userCredential) => {
+                    dispatch(SignInUser(userCredential.user));
+                    setloading(false);
+                  })
+                  .catch((error) => {
+                    setloading(false);
+                    const errorMessage = error.message;
+                    toast.error(errorMessage);
+                  });
+            }}>
             <TextField
               fullWidth
+              required
               id="outlined-basic"
               label="Email Address"
               value={email}
@@ -103,6 +99,7 @@ export default function Login() {
             />
             <TextField
               fullWidth
+              required
               id="outlined-password-input"
               label="Password"
               type="password"
@@ -145,7 +142,7 @@ export default function Login() {
               style={{ textAlign: "left" }}
             >
               <Button
-                onClick={login}
+               type="submit"
                 style={{
                   backgroundColor: "#FCC822",
                   boxShadow:
@@ -160,7 +157,7 @@ export default function Login() {
                   marginRight: "10px",
                 }}
               >
-                <b> Login</b>
+                {loading? <Spinner size="sm"/>:"Login"}
               </Button>
               <Button
                 onClick={()=>navigate('/signup')}
@@ -180,6 +177,7 @@ export default function Login() {
                 Signup
               </Button>
             </div>
+            </form>
           </Box>
         </div>
 

@@ -26,7 +26,10 @@ import {
 } from "firebase/firestore";
 import Footer from "./footer";
 import { db } from "../config/firebase";
+import { useSelector } from "react-redux";
 export default function Profile() {
+  const {user}=useSelector((state)=>state.auth);
+  console.log(user,"user");
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -34,34 +37,9 @@ export default function Profile() {
   const [phone, setphone] = useState("");
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
-  const [profileURL, setprofileURL] = useState(null);
   const [image,setimage]=useState(null);
-  console.log(image,"image");
-  const auth = getAuth();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const uid = user.uid;
-        const q = query(collection(db, "users"), where("uid", "==", uid));
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          // Assuming there's only one document per UID
-          const userData = querySnapshot.docs[0].data();
-          setname(userData.name);
-          setphone(userData.phone);
-          setemail(userData.email);
-          setpassword(userData.password);
-          setprofileURL(userData.profileURL);
-          // return userData;
-        } else {
-          console.log("No matching documents");
-          return null;
-        }
-      }
-    });
-    return () => unsubscribe();
-  }, []);
+
   return (
     <div style={{ marginTop: "100px" }}>
       <Mainnavbar />
@@ -110,7 +88,7 @@ export default function Profile() {
             }}
           >
             <img
-              src={profileURL || profile}
+              src={user?.image || profile}
               width="100rem"
               height={"100rem"}
               style={{
@@ -249,8 +227,7 @@ export default function Profile() {
                         letterSpacing: "0em",
                       }}
                     >
-                      hsjsh
-                      {name}
+                     {user?.name}
                     </td>
                   </tr>
                   <tr>
@@ -307,7 +284,7 @@ export default function Profile() {
                         letterSpacing: "0em",
                       }}
                     >
-                      {phone}
+                      {user?.phone}
                     </td>
                   </tr>
                   <tr>
@@ -364,11 +341,10 @@ export default function Profile() {
                         letterSpacing: "0em",
                       }}
                     >
-                      hsuhsiusiu
-                      {email}
+                      {user?.email}
                     </td>
                   </tr>
-                  <tr>
+                  {/* <tr>
                     <th
                       style={{
                         padding: "1rem",
@@ -422,10 +398,9 @@ export default function Profile() {
                         letterSpacing: "0em",
                       }}
                     >
-                      09999
-                      {password}
+                    {user?.password||''}
                     </td>
-                  </tr>
+                  </tr> */}
                 </tbody>
               </table>
             </Card>

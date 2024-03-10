@@ -3,10 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 import header from "../assets/images/header.png";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useMediaQuery, createTheme } from "@mui/material";
-
+import { SignOutUser } from "../redux/AuthThunk";
+import { useSelector,useDispatch } from "react-redux";
 const theme = createTheme();
 
 export default function Mainnavbar() {
+  const {user}=useSelector((state)=>state.auth);
+  const dispatch=useDispatch();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
 
@@ -37,6 +40,11 @@ export default function Mainnavbar() {
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
+  const handleclose=(e)=>{
+    e.preventDefault();
+    dispatch(SignOutUser());
+    setIsMenuOpen(false);
+  }
   // ...
 
   const renderMobileMenu = () => (
@@ -98,6 +106,12 @@ export default function Mainnavbar() {
               activeLink={activeLink}
               onClick={closeMenu}
             />
+              <NavLink
+              style={{ marginBottom: "10px" }}
+              text="Logout"
+              activeLink={activeLink}
+              onClick={handleclose}
+            />
           </div>
         </div>
       )}
@@ -118,6 +132,12 @@ export default function Mainnavbar() {
         activeLink={activeLink}
       />
       <NavLink to="/profile" text="Profile" activeLink={activeLink} />
+      <NavLink
+      onClick={handleclose}
+        to={'/login'}
+        text="Logout"
+        activeLink={activeLink}
+      />
     </div>
   );
 

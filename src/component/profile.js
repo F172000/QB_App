@@ -41,7 +41,7 @@ export default function Profile() {
 
 
   return (
-    <div style={{ marginTop: "100px" }}>
+    <div style={{ marginTop: "1rem" }}>
       <Mainnavbar />
       {/* <Card style={{ padding: 50 }}>
           <h6>General Setting </h6>

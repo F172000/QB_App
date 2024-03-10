@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import header from "./images/header.png";
+import header from "../assets/images/header.png";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useMediaQuery, createTheme } from "@mui/material";
 

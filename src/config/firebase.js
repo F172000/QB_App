@@ -11,12 +11,11 @@ const firebaseConfig = {
   storageBucket: "qb-app-67264.appspot.com",
   messagingSenderId: "769626605225",
   appId: "1:769626605225:web:f5714aafe5ed881a5e4bb8",
-  //databaseURL: "https://qb-app-67264-default-rtdb.firebaseio.com/",
 };
 
 // Initialize Firebase
 const firebase = initializeApp(firebaseConfig);
-export const auth = getAuth(firebase);
-export const db = getFirestore(firebase);
-
-export const storage = getStorage(firebase);
+const auth = getAuth(firebase);
+const db = getFirestore(firebase);
+const storage = getStorage(firebase);
+export {auth,db,storage};

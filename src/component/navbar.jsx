@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import header from "./images/header.png";
+import header from "../assets/images/header.png";
 import {
   Button,
   AppBar,

@@ -1,4 +1,4 @@
-import { db } from "../firebase";
+import { db } from "../config/firebase";
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import {
@@ -8,8 +8,8 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import image from "./images/image.png";
-import logo from "./images/header.png";
+import image from "../assets/images/image.png";
+import logo from "../assets/images/header.png";
 
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import {
@@ -20,11 +20,11 @@ import {
   doc,
 } from "firebase/firestore";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 
 const theme = createTheme();
 export default function Signup() {
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const [name, setname] = useState("");
   const [phone, setphone] = useState("");
   const [email, setemail] = useState("");
@@ -39,7 +39,7 @@ export default function Signup() {
         password
       );
       const user = userCredential.user.uid;
-      Navigate("/Profile");
+      navigate("/profile");
       console.log(user);
       const docRef = await addDoc(collection(db, "users"), {
         uid: user,
@@ -149,7 +149,6 @@ export default function Signup() {
               style={{ textAlign: "left" }}
             >
               <Button
-                href="/Payments1"
                 onClick={signup}
                 style={{
                   backgroundColor: "#FCC822",
@@ -167,7 +166,7 @@ export default function Signup() {
                 <b>Signup</b>
               </Button>{" "}
               <Button
-                href="/Login"
+                onClick={() => navigate("/")}
                 style={{
                   backgroundColor: "#FCC822",
                   color: "black",

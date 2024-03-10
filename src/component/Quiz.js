@@ -17,9 +17,6 @@ import {
   Step,
   StepLabel,
 } from "@mui/material";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import Navbar from "./navbar";
-import footor from "./images/footor.png";
 
 import Footer from "./footer";
 import Mainnavbar from "./navbarmain";

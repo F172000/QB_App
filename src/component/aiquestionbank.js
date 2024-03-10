@@ -14,7 +14,7 @@ import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import Navbar from "./navbar";
 import Mainnavbar from "./navbarmain";
-import footor from "./images/footor.png";
+import footor from "../assets/images/footor.png";
 
 import Footer from "./footer";
 

@@ -1,7 +1,6 @@
 import React from "react";
 import { Button } from "@mui/material";
 import Navbar from "./navbar";
-import Footer from "./footer";
 
 import { useMediaQuery, createTheme, ThemeProvider } from "@mui/material";
 
@@ -118,7 +117,7 @@ export default function Home() {
               </Button>
             </div>
           </div>
-          <Footer />
+          {/* <Footer /> */}
         </div>
       </div>
     </ThemeProvider>

@@ -12,11 +12,9 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import Image from "./images/image.png";
-import Navbar from "./navbar";
 import Mainnavbar from "./navbarmain";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import profile from '../component/images/profile.jpg'
+import profile from '../assets/images/profile.jpg'
 import {
   doc,
   getFirestore,
@@ -27,8 +25,7 @@ import {
   query,
 } from "firebase/firestore";
 import Footer from "./footer";
-import footor from "./images/footor.png";
-import { db } from "../firebase";
+import { db } from "../config/firebase";
 export default function Profile() {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { db } from "../firebase";
+import { db } from "../config/firebase";
 import TextField from "@mui/material/TextField";
 import {
   Button,
@@ -9,10 +9,8 @@ import {
   createTheme,
   Link,
 } from "@mui/material";
-import image from "./images/image.png";
-
+import image from "../assets/images/image.png";
 import { useNavigate } from "react-router-dom";
-
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import {
   getFirestore,
@@ -21,12 +19,11 @@ import {
   setDoc,
   doc,
 } from "firebase/firestore";
-import logo from "./images/header.png";
-import { Navigate } from "react-router-dom";
+import logo from "../assets/images/header.png";
 
 const theme = createTheme();
 export default function Login() {
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [email, setemail] = useState("");
@@ -42,7 +39,7 @@ export default function Login() {
 
         const user = userCredential.user;
 
-        Navigate("/Profile");
+      navigate("/Profile");
         // ...
       })
       .catch((error) => {
@@ -148,7 +145,6 @@ export default function Login() {
               style={{ textAlign: "left" }}
             >
               <Button
-                href="/Login"
                 onClick={login}
                 style={{
                   backgroundColor: "#FCC822",
@@ -167,7 +163,7 @@ export default function Login() {
                 <b> Login</b>
               </Button>
               <Button
-                href="/Signup"
+                onClick={()=>navigate('/signup')}
                 style={{
                   backgroundColor: "#FCC822",
                   color: "black",

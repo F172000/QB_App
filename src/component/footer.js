@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import footor from "./images/footor.png";
+import footor from "../assets/images/footor.png";
 
 export default function Footer() {
   const [isFixed, setIsFixed] = useState(true);

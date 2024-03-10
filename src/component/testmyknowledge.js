@@ -16,21 +16,12 @@ import {
   Container,
   styled,
 } from "@mui/material";
-import PictureInPictureOutlinedIcon from "@mui/icons-material/PictureInPictureOutlined";
-//import { styled } from "@mui/system";
 
 import Footer from "./footer";
-import "./style.css";
-import image from "./images/image.png";
-import logo from "./images/logo.png";
-import Navbar from "./navbar";
+import "../assets/css/style.css";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import footor from "./images/footor.png";
-import QueuePlayNextOutlinedIcon from "@mui/icons-material/QueuePlayNextOutlined";
-import footer from "./images/footer.png";
 import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
-import NaturePeopleOutlinedIcon from "@mui/icons-material/NaturePeopleOutlined";
 import Mainnavbar from "./navbarmain";
 
 // const useStyles = {

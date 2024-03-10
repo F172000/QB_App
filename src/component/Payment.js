@@ -12,17 +12,11 @@ import {
   Chip,
   Typography,
 } from "@mui/material";
-import image from "./images/image.png";
-import logo from "./images/logo.png";
-import Navbar from "./navbar";
-import pay from "./images/mobile-payment 1.png";
+import pay from "../assets/images/mobile-payment 1.png";
 import { Card } from "react-bootstrap";
 import Snavbar from "./navsignup";
-import footor from "./images/footor.png";
-
-import Footer from "./footer";
 const theme = createTheme();
-export default function Payments1() {
+export default function Payment() {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
@@ -168,9 +162,9 @@ export default function Payments1() {
             </Card>
           </div>
         </div>
-        <div>
+        {/* <div>
           <Footer />
-        </div>
+        </div> */}
       </div>
     </div>
   );

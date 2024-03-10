@@ -1,38 +1,25 @@
 import React from "react";
-import footor from "./images/footor.png";
 import { useState } from "react";
 import {
   Button,
-  Box,
   Checkbox,
   Link,
   Stack,
-  CardActionArea,
   Chip,
-  Container,
-  Typography,
   TextField,
   FormControl,
   useMediaQuery,
   createTheme,
-  InputLabel,
-  Select,
-  MenuItem,
   Card,
   CardContent,
 } from "@mui/material";
-import image from "./images/image.png";
-import logo from "./images/logo.png";
-import Navbar from "./navbar";
-import credit from "./images/credit.png";
+import credit from "../assets/images/credit.png";
+import visa from "../assets/images/visa.png";
+import Snavbar from "./navsignup";
+import pay from "../assets/images/mobile-payment 1.png";
 import Footer from "./footer";
-import footer from "./images/footer.png";
-import visa from "./images/visa.png";
-import pay from "./images/mobile-payment 1.png";
-import Mainnavbar from "./navbarmain";
-
 const theme = createTheme();
-export default function Uploads2() {
+export default function PaymentDetails() {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [cardName, setCardName] = useState("");
   const [cardNumber, setCardNumber] = useState("");
@@ -52,7 +39,7 @@ export default function Uploads2() {
   return (
     <div>
       <div style={{ overflow: "hidden", marginTop: "100px" }}>
-        <Mainnavbar />
+        <Snavbar />
 
         <div
           className="row"
@@ -86,7 +73,7 @@ export default function Uploads2() {
                 fontSize: isSmallScreen ? "1.7rem" : "2.8rem", // Relative font size
               }}
             >
-              Please make a small contribution to hosting costs for this site.
+              Support this site with a small contribution to hosting cost
             </p>
             <p
               style={{
@@ -100,9 +87,8 @@ export default function Uploads2() {
                 fontSize: isSmallScreen ? "1.0rem" : "1.25rem", // Relative font size
               }}
             >
-              Thank you for choosing to upload a Question Bank! Before
-              proceeding, a small fee is required to cover the processing and
-              integration of your questions.
+              Take the first step towards enhancing our collective knowledge.
+              Register, contribute, and empower learning!
             </p>
           </div>
           <div className="col-md-6 col-sm-6  d-flex justify-content-center">
@@ -285,7 +271,7 @@ export default function Uploads2() {
         </div>
       </div>
       <div>
-        <Footer />{" "}
+        <Footer />
       </div>
     </div>
   );

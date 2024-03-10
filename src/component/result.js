@@ -1,4 +1,4 @@
-import score from "./images/score.png";
+import score from "../assets/images/score.png";
 import React from "react";
 import {
   Box,
@@ -13,8 +13,6 @@ import {
   createTheme,
   Button,
 } from "@mui/material";
-import Navbar from "./navbar";
-import footor from "./images/footor.png";
 import Mainnavbar from "./navbarmain";
 import Footer from "./footer";
 const tableData = [

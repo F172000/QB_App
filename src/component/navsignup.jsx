@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import header from "./images/header.png";
+import header from "../assets/images/header.png";
 import {
   Button,
   AppBar,
@@ -75,7 +75,7 @@ export default function Snavbar() {
               >
                 <MenuItem onClick={handleMobileMenuClose}>
                   <a
-                    href="/Login"
+                    href="/"
                     style={{
                       textDecoration: "none",
                       fontSize: "13px",
@@ -87,7 +87,7 @@ export default function Snavbar() {
                 </MenuItem>
                 <MenuItem onClick={handleMobileMenuClose}>
                   <a
-                    href="/Signup"
+                    href="/signup"
                     style={{
                       textDecoration: "none",
                       fontSize: "13px",
@@ -102,9 +102,9 @@ export default function Snavbar() {
           ) : (
             // For Desktop
             <div className="links">
-              <a href="/Login">
+              <a href="/">
                 <Button
-                  href="/Login"
+                  href="/"
                   style={{
                     //  backgroundColor: "#FCC822",
 
@@ -115,9 +115,9 @@ export default function Snavbar() {
                   SIGN IN
                 </Button>
               </a>
-              <a href="/Signup">
+              <a href="/signup">
                 <Button
-                  href="/Signup"
+                  href="/signup"
                   style={{
                     backgroundColor: "#FCC822",
                     color: "black",

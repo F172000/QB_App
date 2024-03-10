@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
 
-import { storage } from "../firebase";
+import { storage } from "../config/firebase";
 import {
   Button,
   useMediaQuery,
@@ -12,12 +12,12 @@ import {
   Modal,
   Typography,
 } from "@mui/material";
-import upload from "./images/upload (1) 1.png";
+import upload from "../assets/images/upload (1) 1.png";
 import Mainnavbar from "./navbarmain";
 // import XLSX from "xlsx";
 import * as XLSX from 'xlsx';
 import Footer from "./footer";
-import { db } from "../firebase";
+import { db } from "../config/firebase";
 import { read, utils } from "xlsx";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { getFirestore, collection, addDoc } from "@firebase/firestore";

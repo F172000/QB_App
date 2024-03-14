@@ -86,6 +86,7 @@ export default function QuizPage() {
         userId:user?.id,
         createdAt:serverTimestamp()
       });
+      console.log(result,'result');
       // Redirect to the next page when the last question is answered
       if(result){
       navigate("/Result",{ state: { correctAnswers: updatedCorrectAnswers,

@@ -136,7 +136,7 @@ dispatch(getQuizes(user?.id));
 
                     {/* Data Rows */}
 
-                    {quizes.slice(0,3).map((row, index) => (
+                    {quizes?.slice(0,3)?.map((row, index) => (
                       <TableRow key={index} style={{ borderBottom: "0px" }}>
                         <TableCell
                           component="th"

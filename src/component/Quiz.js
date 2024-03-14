@@ -51,6 +51,7 @@ const questions = [
 ];
 
 export default function QuizPage() {
+  const location=useLocation();
   const { questions } = location.state;
   console.log(questions,"questions");
   const theme = useTheme();

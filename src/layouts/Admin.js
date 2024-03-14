@@ -8,9 +8,9 @@ const Admin = (props) => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
-  if (!user) {
-    navigate("/");
-  }
+  // if (!user) {
+  //   navigate("/login");
+  // }
   return (
     <>
         {props.children}

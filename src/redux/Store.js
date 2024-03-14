@@ -5,6 +5,7 @@ import CryptoJS from "crypto-js";
 import storage from "redux-persist/lib/storage";
 import persistReducer from "redux-persist/es/persistReducer";
 import { combineReducers } from "@reduxjs/toolkit";
+import questionBankSlice from "./questionBankSlice";
 
 const persistConfig={
   key:"root",
@@ -13,6 +14,7 @@ const persistConfig={
 }
 const reducer=combineReducers({
   auth: authSlice,
+  questionBanks:questionBankSlice
 });
 const persistedReducer=persistReducer(persistConfig,reducer);
 const saveToLocalStorage = (state) => {

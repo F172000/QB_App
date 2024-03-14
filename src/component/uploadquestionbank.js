@@ -61,48 +61,49 @@ export default function Uploadquebank() {
     // Trigger the hidden file input when the button is clicked
     fileInputRef.current.click();
   };
-  // const importData = async () => {
-  //   if (!selectedFile) {
-  //     alert('Please select a file first.');
-  //     return;
-  //   }
-  // }
-  const handleSave=async()=>{
-      if (!selectedfile) {
-        alert('Please select a file first.');
-        return;
-      }
+  const handleSave = async () => {
+    if (!selectedfile) {
+      alert('Please select a file first.');
+      return;
+    }
   
-      const fileReader = new FileReader();
-      fileReader.onload = (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const sheetName = workbook.SheetNames[0];
-        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+    const fileReader = new FileReader();
+    fileReader.onload = async (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
   
-        const questionBankCollection = collection(db,'questionBank');
+      const questionBankCollection = collection(db, 'questionBanks');
+      const questions = [];
   
-        sheetData.forEach(async(row, index) => {
-          const fileName = selectedfile.name;
-          const { Question, Options, Answer } = row;
+      sheetData.forEach(row => {
+        const { 'Question ID': questionId, 'Question Text': questionText, 
+                'Option A': optionA, 'Option B': optionB, 'Option C': optionC,
+                'Option D': optionD, 'Correct Answer(s)': correctAnswer,
+                'Difficulty Level': difficultyLevel, 'Category': category,
+                'Explanation': explanation } = row;
   
-          const questionData = {
-            question: Question,
-            options: Options.split('<br>'), // Split options into an array
-            answer: Answer,
-          };
-  console.log(questionData,"questionData");
-          await addDoc(questionBankCollection,{
-            name: fileName,
-            questions: [questionData],
-          });
-        });
+        const questionData = {
+          questionId: questionId,
+          questionText: questionText,
+          options: [optionA, optionB, optionC, optionD],
+          correctAnswer: correctAnswer,
+          difficultyLevel: difficultyLevel,
+          category: category,
+          explanation: explanation
+        };
   
-        alert('Data imported successfully.');
-      };
+        questions.push(questionData);
+      });
   
-      fileReader.readAsArrayBuffer(selectedfile);
+      await addDoc(questionBankCollection, { questions: questions });
+  
+      alert('Data imported successfully.');
     };
+  
+    fileReader.readAsArrayBuffer(selectedfile);
+  };  
   const handleFileChange = async (e) => {
     setselectedfile(e.target.files[0]);
     // setSelectedFileName(selectedFile.name);
@@ -250,22 +251,35 @@ export default function Uploadquebank() {
                   <Typography variant="h5" component="h2" gutterBottom>
                     Add New Complaint Ticket
                   </Typography>
-                  <input
+                  {/* <input
                     ref={fileInputRef}
                     type="file"
                     accept=".xls, .xlsx"
                     onChange={handleFileChange}
                     style={{ display: "none" }}
-                  />
+                  /> */}
                   <Button onClick={handleFileUpload}>Choose File</Button>
-                  <p>Selected File: {selectedFileName}</p>
+                  <span style={{color:"blue"}}>{selectedfile?.name}</span>
                   <VisuallyHiddenInput
                     ref={fileInputRef}
                     type="file"
                     accept=".xls, .xlsx"
                     onChange={handleFileChange}
                   />
-                  <Button onClick={handleSave}>Save</Button>
+                  <hr/>
+                  <Button    style={{
+                  backgroundColor: "#FCC822",
+                  // boxShadow:
+                  //   " 0px 10.450244903564453px 23.22276496887207px -6.966829299926758px #FBE18F",
+                  fontSize: "13px",
+                  lineHeight: "14px",
+                  width: "71px",
+                  height: "37px",
+                  fontWeight: 400,
+                  font: "Poppins",
+                  color: "black",
+                  // marginRight: "10px",
+                }} onClick={handleSave}>Save</Button>
                 </Box>
                 {/* <Button>Save</Button> */}
               </Modal>

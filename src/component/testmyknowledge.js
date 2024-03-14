@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import {
   Button,
@@ -14,30 +14,35 @@ import {
   CardContent,
   CardMedia,
   Container,
-  styled,
+  styled,CircularProgress
 } from "@mui/material";
 
 import Footer from "./footer";
+import {toast} from 'react-toastify';
 import "../assets/css/style.css";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
 import Mainnavbar from "./navbarmain";
-
-// const useStyles = {
-//   cardContent: {
-//     textAlign: "center",
-//     paddingTop: "5px",
-//   },
-// };
-
+import {getQuestionBanks} from '../redux/questionBankThunk';
+import { useSelector,useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const theme = createTheme();
 
 export default function Testknowledge() {
+  const navigate=useNavigate();
+  const dispatch=useDispatch();
+  const [numberOfQuestions, setNumberOfQuestions] = useState('');
+  console.log(numberOfQuestions,"no of questions");
+  const {Banks,loading}=useSelector((state)=>state.questionBanks);
+  const [SelectedQuestionBank,setSelectedQuestionBank]=useState('');
+  console.log(Banks,"questionBanks");
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearchVisible, setIsSearchVisible] = useState(false);
-
+  useEffect(()=>{
+   dispatch(getQuestionBanks());
+  },[])
   const handleSearch = () => {
     // Implement your search logic here
     // Filter the rows based on the searchTerm
@@ -47,6 +52,37 @@ export default function Testknowledge() {
     // Log the filtered rows or update the state as needed
     // console.log("Filtered Rows:", filteredRows);
   };
+  const handleTest=()=>{
+    const selectedBank = Banks.find(bank => bank.id === SelectedQuestionBank);
+    if (selectedBank) {
+      const questions = selectedBank.questions;
+      const totalQuestions = questions.length;
+      const numToSelect = parseInt(numberOfQuestions);
+  
+      // Ensure numToSelect is a valid number and is not greater than totalQuestions
+      if (!isNaN(numToSelect) && numToSelect > 0 && numToSelect <= totalQuestions) {
+        // Randomly select numToSelect questions
+        const selectedIndices = [];
+        while (selectedIndices.length < numToSelect) {
+          const randomIndex = Math.floor(Math.random() * totalQuestions);
+          if (!selectedIndices.includes(randomIndex)) {
+            selectedIndices.push(randomIndex);
+          }
+        }
+  
+        // Retrieve the selected questions
+        const selectedQuestions = selectedIndices.map(index => questions[index]);
+  
+        // Shuffle the selected questions
+        const shuffledQuestions = selectedQuestions.sort(() => Math.random() - 0.5);
+        navigate("/Quiz", { state: { questions: shuffledQuestions } });
+      } else {
+        toast.error("Invalid number of questions to select.");
+      }
+    } else {
+      toast.error("Selected question bank not found.");
+    }
+  }
 
   return (
     <div>
@@ -132,7 +168,14 @@ export default function Testknowledge() {
           }}
         >
           {/* Card 1 */}
-          <a href="/QuizPage" style={{ textDecoration: "none" }}>
+          {loading ? (
+          <div className="col-12 justify-content-center d-flex pt-2 pb-2">
+            {" "}
+            <CircularProgress color="inherit" />
+          </div>
+        ) : Banks?.length > 0 && Banks?.map((item, index) => {
+            return (
+          <a  onClick={() => setSelectedQuestionBank(item.id)} style={{ textDecoration: "none" }} key={index}>
             <Card
               style={{
                 marginBottom: isSmallScreen ? "30px" : "20px",
@@ -142,7 +185,9 @@ export default function Testknowledge() {
                 top: "318px",
                 borderRadius: "20px",
                 backgroundColor: "#D4ECFF",
-                boxShadow: "0px 4px 4px 0px #D9ECFF80",
+                boxShadow:  SelectedQuestionBank === item?.id
+                ? "0px 5px 5px 5px #D9ECFF80"
+                : "0px 4px 4px 0px #D9ECFF80",
                 "@media (max-width: 768px)": {
                   padding: "0", // Remove padding for smaller screens
                   marginLeft: "20px",
@@ -176,182 +221,32 @@ export default function Testknowledge() {
                 {/* Text */}
                 <div sx={{ textAlign: "center", paddingTop: "5px" }}>
                   <Typography variant="h6" gutterBottom>
-                    Question Bank One
+                    Question Bank {index+1}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    25 Questions
+                    {item?.questions?.length} Questions
                   </Typography>
                 </div>
               </Container>
             </Card>
           </a>
-          <a href="/QuizPage" style={{ textDecoration: "none" }}>
-            <Card
-              style={{
-                marginBottom: isSmallScreen ? "30px" : "20px",
-                textAlign: "center",
-                width: isSmallScreen ? "350px" : "250px",
-                height: isSmallScreen ? "250px" : " 300px",
-                top: "318px",
-                borderRadius: "20px",
-                backgroundColor: "#D4ECFF",
-                boxShadow: "0px 4px 4px 0px #D9ECFF80",
-                "@media (max-width: 768px)": {
-                  padding: "0", // Remove padding for smaller screens
-                  marginLeft: "20px",
-                },
-              }}
-            >
-              <Container
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "column",
-                  marginTop: "50px",
-                }}
-              >
-                {/* Yellow Box */}
-                <Box
-                  style={{
-                    height: isSmallScreen ? "80px" : "90px",
-                    width: isSmallScreen ? "100px" : "90px",
-                    borderRadius: "8px",
-                    backgroundColor: "#FCC832",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: "20px",
-                  }}
-                >
-                  <LiveHelpOutlinedIcon />
-                </Box>
-                {/* Text */}
-                <div sx={{ textAlign: "center", paddingTop: "5px" }}>
-                  <Typography variant="h6" gutterBottom>
-                    Question Bank Two
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    10 Questions
-                  </Typography>
-                </div>
-              </Container>
-            </Card>
-          </a>
-          <a href="/QuizPage" style={{ textDecoration: "none" }}>
-            <Card
-              style={{
-                marginBottom: isSmallScreen ? "30px" : "20px",
-                textAlign: "center",
-                width: isSmallScreen ? "350px" : "250px",
-                height: isSmallScreen ? "250px" : " 300px",
-                top: "318px",
-                borderRadius: "20px",
-                backgroundColor: "#D4ECFF",
-                boxShadow: "0px 4px 4px 0px #D9ECFF80",
-                "@media (max-width: 768px)": {
-                  padding: "0", // Remove padding for smaller screens
-                  marginLeft: "20px",
-                },
-              }}
-            >
-              <Container
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "column",
-                  marginTop: "50px",
-                }}
-              >
-                {/* Yellow Box */}
-                <Box
-                  style={{
-                    height: isSmallScreen ? "80px" : "90px",
-                    width: isSmallScreen ? "100px" : "90px",
-                    borderRadius: "8px",
-                    backgroundColor: "#FCC832",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: "20px",
-                  }}
-                >
-                  <LiveHelpOutlinedIcon />
-                </Box>
-                {/* Text */}
-                <div sx={{ textAlign: "center", paddingTop: "5px" }}>
-                  <Typography variant="h6" gutterBottom>
-                    Question Bank Three
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    59 Questions
-                  </Typography>
-                </div>
-              </Container>
-            </Card>
-          </a>
-          <a href="/QuizPage" style={{ textDecoration: "none" }}>
-            <Card
-              style={{
-                marginBottom: isSmallScreen ? "30px" : "20px",
-                textAlign: "center",
-                width: isSmallScreen ? "350px" : "250px",
-                height: isSmallScreen ? "250px" : " 300px",
-                top: "318px",
-                borderRadius: "20px",
-                backgroundColor: "#D4ECFF",
-                boxShadow: "0px 4px 4px 0px #D9ECFF80",
-                "@media (max-width: 768px)": {
-                  padding: "0", // Remove padding for smaller screens
-                  marginLeft: "20px",
-                },
-              }}
-            >
-              <Container
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "column",
-                  marginTop: "50px",
-                }}
-              >
-                {/* Yellow Box */}
-                <Box
-                  style={{
-                    height: isSmallScreen ? "80px" : "90px",
-                    width: isSmallScreen ? "100px" : "90px",
-                    borderRadius: "8px",
-                    backgroundColor: "#FCC832",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: "20px",
-                  }}
-                >
-                  <LiveHelpOutlinedIcon />
-                </Box>
-                {/* Text */}
-                <div sx={{ textAlign: "center", paddingTop: "5px" }}>
-                  <Typography variant="h6" gutterBottom>
-                    Question Bank Four
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    72 Questions
-                  </Typography>
-                </div>
-              </Container>
-            </Card>
-          </a>
+        )})}
+{Banks?.length===0 &&
+              <div className="d-flex flex-column justify-content-center align-items-center nodata">
+              <small> No Question Bank Found</small>
+              {/* <img className="w-25 h-25 " src={nodata} alt="nodata"></img> */}
+            </div>}
+          
         </Container>
         <div className="row m-4 ">
           <div className="col-md-8 col-sm-7 d-flex justify-content-center align-items-center">
             <TextField
               //fullWidth
-              id="outlined-basic"
-              label="Number of Questions"
+              // id="outlined-basic"
+              // label="Number of Questions"
               type="number"
+              value={numberOfQuestions}
+              onChange={(e)=>setNumberOfQuestions(e.target.value)}
               style={{
                 width: "80%",
                 paddingBottom: "10px",
@@ -377,7 +272,7 @@ export default function Testknowledge() {
                 float: "right",
                 // marginRight: "100px",
               }}
-              href="/QuizPage"
+             onClick={handleTest}
             >
               Test My Knowledge
             </Button>

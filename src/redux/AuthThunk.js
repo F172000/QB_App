@@ -72,10 +72,13 @@ export const SignInUser = createAsyncThunk(
       const querySnapshot = await getDocs(
         query(collection(db, "users"), where("uid", "==", user.uid))
       );
+      console.log(querySnapshot,"querysnapshot");
+      if(querySnapshot.docs.length>0){
       const id = querySnapshot.docs[0].id;
       const data = querySnapshot.docs[0].data();
       console.log({ id, data });
       return { id, ...data };
+      }
     } catch (error) {
       console.log(error);
       return rejectWithValue(error.message || "Error signing in");

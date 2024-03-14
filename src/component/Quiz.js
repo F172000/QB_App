@@ -20,6 +20,7 @@ import {
 
 import Footer from "./footer";
 import Mainnavbar from "./navbarmain";
+import { useLocation } from "react-router-dom";
 
 const questions = [
   {
@@ -50,6 +51,8 @@ const questions = [
 ];
 
 export default function QuizPage() {
+  const { questions } = location.state;
+  console.log(questions,"questions");
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [currentQuestion, setCurrentQuestion] = useState(0);

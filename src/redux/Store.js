@@ -6,6 +6,7 @@ import storage from "redux-persist/lib/storage";
 import persistReducer from "redux-persist/es/persistReducer";
 import { combineReducers } from "@reduxjs/toolkit";
 import questionBankSlice from "./questionBankSlice";
+import quizesSlice from "./quizesSlice";
 
 const persistConfig={
   key:"root",
@@ -14,7 +15,8 @@ const persistConfig={
 }
 const reducer=combineReducers({
   auth: authSlice,
-  questionBanks:questionBankSlice
+  questionBanks:questionBankSlice,
+  quizes:quizesSlice
 });
 const persistedReducer=persistReducer(persistConfig,reducer);
 const saveToLocalStorage = (state) => {

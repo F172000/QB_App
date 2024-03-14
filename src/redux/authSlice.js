@@ -5,17 +5,13 @@ import { SignInUser } from "./AuthThunk";
 const initialState = {
   user: null,
   authLoading: false,
-  error: null,
-  isForgetPasswordLoading: false,
+  error: null
 };
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    PASSWORD_LOADER: (state, action) => {
-      state.isForgetPasswordLoading = action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder

@@ -1,8 +1,8 @@
+
 import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
-  Card,
   CardContent,
   Container,
   FormControl,
@@ -20,45 +20,30 @@ import {
 
 import Footer from "./footer";
 import Mainnavbar from "./navbarmain";
-import { useLocation } from "react-router-dom";
-
-const questions = [
-  {
-    id: 1,
-    question: "1. What is the capital of France?",
-    options: ["  A) Berlin", "B) Madrid", "C) Paris", "D) Rome"],
-    correctAnswer: "Paris",
-  },
-  {
-    id: 2,
-    question: "2. Which planet is known as the Red Planet?",
-    options: ["Mars", "Jupiter", "Venus", "Saturn"],
-    correctAnswer: "Mars",
-  },
-  {
-    id: 3,
-    question: "3. What is the capital of France?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswer: "Rome",
-  },
-  {
-    id: 4,
-    question: "4. Which planet is known as the Blue Planet?",
-    options: ["Mars", "Jupiter", "Venus", "Saturn"],
-    correctAnswer: "Jupiter",
-  },
-  // Add more questions as needed
-];
+import { useLocation, useNavigate } from "react-router-dom";
+import { serverTimestamp } from "firebase/firestore";
+import { getFirestore, collection, addDoc } from "@firebase/firestore";
+import { db } from "../config/firebase";
+import { getAuth } from "firebase/auth";
+import { useSelector } from "react-redux";
 
 export default function QuizPage() {
-  const location=useLocation();
-  const { questions } = location.state;
-  console.log(questions,"questions");
+  const navigate=useNavigate();
+  const location = useLocation();
+  const {user}=useSelector((state)=>state.auth);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const [Questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [timeRemaining, setTimeRemaining] = useState(60);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+
+  useEffect(() => {
+    const { questions } = location.state;
+    setQuestions(questions);
+  }, [location.state]);
 
   useEffect(() => {
     // Reset timer when the question changes
@@ -75,19 +60,39 @@ export default function QuizPage() {
     return () => clearInterval(timer);
   }, [currentQuestion]);
 
-  const handleOptionChange = (event) => {
-    setSelectedAnswer(event.target.value);
+  const handleOptionChange = (option) => {
+    setSelectedAnswer(option);
   };
 
-  const handleNextQuestion = () => {
-    // Check answer and move to the next question
-    // Add your logic to handle correct/incorrect answers as needed
-    console.log("Selected answer:", selectedAnswer);
-
-    // Move to the next question
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion((prevQuestion) => prevQuestion + 1);
+  const handleNextQuestion = async() => {
+    console.log(selectedAnswer,"selectedAnswer")
+    if (!selectedAnswer) {
+      // You can add an alert or notification to prompt the user to select an answer
+      return;
     }
+    let updatedCorrectAnswers = correctAnswers;
+    if (selectedAnswer === Questions[currentQuestion]?.correctAnswer) {
+      updatedCorrectAnswers += 1;
+    }
+    console.log(updatedCorrectAnswers,"correct");
+    // Move to the next question
+    if (currentQuestion < Questions.length - 1) {
+      setCurrentQuestion((prevQuestion) => prevQuestion + 1);
+    }else {
+      const QuizCollection = collection(db, 'Quizes');
+     const result= await addDoc(QuizCollection, {
+        correctAnswers: updatedCorrectAnswers,
+        totalQuestions: Questions.length,
+        userId:user?.id,
+        createdAt:serverTimestamp()
+      });
+      // Redirect to the next page when the last question is answered
+      if(result){
+      navigate("/Result",{ state: { correctAnswers: updatedCorrectAnswers,
+        totalQuestions: Questions.length, } });
+      }
+    }
+
   };
 
   const handlePreviousQuestion = () => {
@@ -100,7 +105,7 @@ export default function QuizPage() {
   return (
     <div>
       <Container style={{ padding: "0px" }}>
-        <Mainnavbar></Mainnavbar>
+        <Mainnavbar />
         <div className="m-4">
           <CardContent
             style={{
@@ -110,12 +115,8 @@ export default function QuizPage() {
               marginTop: isSmallScreen ? "130px" : "150px",
             }}
           >
-            <Stepper
-              activeStep={currentQuestion}
-              alternativeLabel
-              className="m-4"
-            >
-              {questions.map((question, index) => (
+            <Stepper activeStep={currentQuestion} alternativeLabel className="m-4">
+              {Questions.map((question, index) => (
                 <Step key={index}>
                   <StepLabel
                     color="#000000"
@@ -130,7 +131,7 @@ export default function QuizPage() {
                       },
                     }}
                   >
-                    {/* {index + 1} */}
+                    {index + 1}
                   </StepLabel>
                 </Step>
               ))}
@@ -141,27 +142,24 @@ export default function QuizPage() {
                 marginTop: "50px",
                 fontSize: isSmallScreen ? "1.7rem" : "2.8rem", // Relative font size
               }}
-              // variant="h4"
-              // paragraph
             >
-              {questions[currentQuestion].question}
+              {Questions[currentQuestion]?.questionText}
             </Typography>
-            <FormControl className="m-4" component="fieldset">
+            <FormControl className="m-4" component="fieldset"  >
+            {Questions[currentQuestion]?.options.map((option, index) => (
               <RadioGroup
+              key={index}
                 aria-label="options"
                 name="options"
                 value={selectedAnswer}
-                onChange={handleOptionChange}
+                onChange={()=>handleOptionChange(option)}
               >
-                {questions[currentQuestion].options.map((option, index) => (
                   <FormControlLabel
-                    key={index}
                     value={option}
                     control={
                       <Radio
                         sx={{
-                          color:
-                            selectedAnswer === option ? "#FCC822" : "#000000",
+                          color: selectedAnswer === option ? "#FCC822" : "#000000",
                           "&.Mui-checked": {
                             color: "#FCC822",
                           },
@@ -170,8 +168,8 @@ export default function QuizPage() {
                     }
                     label={option}
                   />
-                ))}
               </RadioGroup>
+               ))}
             </FormControl>
             <Box
               mt={7}
@@ -184,15 +182,6 @@ export default function QuizPage() {
                 color="primary"
                 onClick={handlePreviousQuestion}
                 disabled={currentQuestion === 0}
-                style={{
-                  color: "#333333",
-                  background:
-                    "linear-gradient(95.34deg, #D1D1D1 0%, #D1D1D1 100%)",
-                  marginRight: isSmallScreen ? " 2.5rem" : "0rem",
-                  boxShadow:
-                    "0px 5.805691242218018px 23.22276496887207px -6.966829299926758px #D1D1D1",
-                  fontSize: isSmallScreen ? "12px" : "15px",
-                }}
               >
                 Previous
               </Button>
@@ -200,7 +189,6 @@ export default function QuizPage() {
                 <CircularProgress
                   variant="determinate"
                   value={(timeRemaining / 60) * 100} // assuming 60 seconds countdown
-                  //color="primary"
                   thickness={5}
                   size={60}
                   style={{
@@ -211,31 +199,14 @@ export default function QuizPage() {
                     transform: "translate(-50%, -50%)",
                   }}
                 />
-                <Typography
-                  variant="body1"
-                  style={{
-                    position: "relative",
-                    zIndex: 1,
-                    fontSize: isSmallScreen ? "11px" : "15px",
-                  }}
-                >
+                <Typography variant="body1">
                   {timeRemaining} s
                 </Typography>
               </div>
               <Button
                 variant="contained"
-                // color="primary"
                 onClick={handleNextQuestion}
                 disabled={timeRemaining === 0}
-                style={{
-                  color: "#333333",
-                  background:
-                    "linear-gradient(95.34deg, #FCC822 0%, #FFCD2E 100%)",
-                  boxShadow:
-                    "0px 5.805691242218018px 23.22276496887207px -6.966829299926758px #FBE18F",
-                  marginLeft: isSmallScreen ? " 2.5rem" : "0rem",
-                  fontSize: isSmallScreen ? "12px" : "15px",
-                }}
               >
                 Next
               </Button>
@@ -243,10 +214,9 @@ export default function QuizPage() {
           </CardContent>
         </div>
       </Container>
-
-      <div >
-        <Footer />
-      </div>
+      {/* <div className="mt-3">
+      <Footer />
+      </div> */}
     </div>
   );
 }

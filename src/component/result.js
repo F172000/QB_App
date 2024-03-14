@@ -1,5 +1,5 @@
 import score from "../assets/images/score.png";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Card,
@@ -14,7 +14,10 @@ import {
   Button,
 } from "@mui/material";
 import Mainnavbar from "./navbarmain";
+import { UseDispatch, useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import Footer from "./footer";
+import { getQuizes } from "../redux/quizesThunk";
 const tableData = [
   { date: "15-03-23", score: "3/10" },
   { date: "27-10-23", score: "8/10" },
@@ -23,7 +26,21 @@ const tableData = [
 
 const theme = createTheme();
 export default function Result() {
+  const location=useLocation();
+  const dispatch=useDispatch();
+  const {user}=useSelector((state)=>state.auth);
+  const {quizes}=useSelector((state)=>state.quizes);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const [correct,setCorrect]=useState(0);
+  const [total,settotal]=useState(0);
+  useEffect(()=>{
+dispatch(getQuizes(user?.id));
+  },[])
+  useEffect(() => {
+    const { correctAnswers,totalQuestions } = location.state;
+    setCorrect(correctAnswers);
+    settotal(totalQuestions);
+  }, [location.state]);
   return (
     <div>
       <div style={{ overflow: "hidden", marginTop: "100px" }}>
@@ -78,7 +95,7 @@ export default function Result() {
                   color: "#000000", // Set the color to match your design
                 }}
               >
-                8/10
+                {correct}/{total}
               </Typography>
             </div>
           </div>
@@ -119,16 +136,16 @@ export default function Result() {
 
                     {/* Data Rows */}
 
-                    {tableData.map((row, index) => (
+                    {quizes.slice(0,3).map((row, index) => (
                       <TableRow key={index} style={{ borderBottom: "0px" }}>
                         <TableCell
                           component="th"
                           scope="row"
                           style={{ textAlign: "left", borderBottom: "0px" }}
                         >
-                          {row.date}
+                          {row.createdAt}
                         </TableCell>
-                        <TableCell align="right">{row.score}</TableCell>
+                        <TableCell align="right">{row.correctAnswers}/{row.totalQuestions}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

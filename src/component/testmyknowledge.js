@@ -32,7 +32,7 @@ const theme = createTheme();
 export default function Testknowledge() {
   const navigate=useNavigate();
   const dispatch=useDispatch();
-  const [numberOfQuestions, setNumberOfQuestions] = useState('');
+  const [numberOfQuestions, setNumberOfQuestions] = useState(0);
   console.log(numberOfQuestions,"no of questions");
   const {Banks,loading}=useSelector((state)=>state.questionBanks);
   const [SelectedQuestionBank,setSelectedQuestionBank]=useState('');
@@ -278,9 +278,9 @@ export default function Testknowledge() {
             </Button>
           </div>
         </div>{" "}
-        <div>
+        {/* <div>
           <Footer />
-        </div>
+        </div> */}
       </div>
       {/* <style>
         {

@@ -26,6 +26,11 @@ var routes = [
     component: PaymentForm,
     layout: "admin",
   },
+  {
+    path: "/test-knowledge",
+    component:Testknowledge ,
+    layout: "admin",
+  },
   // {
   //   path: "/forget_password",
   //   name: "Forget Password",
@@ -57,12 +62,12 @@ var routes = [
   {
     path: "/Payment",
     component: Payment,
-    layout: "auth",
+    layout: "admin",
   },
   {
     path: "/Payment-Details",
     component: PaymentDetails,
-    layout: "auth",
+    layout: "admin",
   },
 
   {

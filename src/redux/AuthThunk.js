@@ -14,6 +14,7 @@ import { db, auth } from "../config/firebase";
 import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
+  signInWithEmailAndPassword
 } from "firebase/auth";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
@@ -63,15 +64,17 @@ export const RegisterUser =
       console.log(error.message);
     }
   };
-
 export const SignInUser = createAsyncThunk(
   "auth/signin",
-  async (user, { rejectWithValue, dispatch }) => {
+  async ({ email, password }, { rejectWithValue, dispatch }) => {
     try {
-      console.log(user);
+      const { user } = await signInWithEmailAndPassword(auth, email, password);
       const querySnapshot = await getDocs(
-        query(collection(db, "users"), where("uid", "==", user.uid))
+        query(collection(db, "users"), where("uid", "==", user?.uid))
       );
+      if (querySnapshot.empty) {
+        return rejectWithValue("No data found");
+      }
       console.log(querySnapshot,"querysnapshot");
       if(querySnapshot.docs.length>0){
       const id = querySnapshot.docs[0].id;

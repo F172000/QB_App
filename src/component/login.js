@@ -16,18 +16,17 @@ import {toast} from 'react-toastify';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { SignInUser } from "../redux/AuthThunk";
 import logo from "../assets/images/header.png";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { Spinner } from "react-bootstrap";
 
 const theme = createTheme();
 export default function Login() {
   const dispatch=useDispatch();
+  const {user,authLoading}=useSelector((state)=>state.auth);
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const [loading,setloading]=useState(false);
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
-
 
 
   return (
@@ -74,19 +73,7 @@ export default function Login() {
           >
             <form onSubmit={async(e)=>{
               e.preventDefault();
-              e.preventDefault();
-                setloading(true);
-                // dispatch(SignInUser(email, password,setloading));
-                await signInWithEmailAndPassword(auth, email, password)
-                  .then((userCredential) => {
-                    dispatch(SignInUser(userCredential.user));
-                    setloading(false);
-                  })
-                  .catch((error) => {
-                    setloading(false);
-                    const errorMessage = error.message;
-                    toast.error(errorMessage);
-                  });
+              dispatch(SignInUser({email,password})); 
             }}>
             <TextField
               fullWidth
@@ -157,7 +144,7 @@ export default function Login() {
                   marginRight: "10px",
                 }}
               >
-                {loading? <Spinner size="sm"/>:"Login"}
+                {authLoading? <Spinner size="sm"/>:"Login"}
               </Button>
               <Button
                 onClick={()=>navigate('/signup')}

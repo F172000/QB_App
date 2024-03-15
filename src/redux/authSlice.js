@@ -16,18 +16,16 @@ export const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(SignInUser.pending, (state) => {
-        state.loading = true;
+        state.authLoading = true;
         state.error = null;
       })
       .addCase(SignInUser.fulfilled, (state, action) => {
-        console.log("state signin", action.payload);
         toast.success("Signin Sucessfully.");
-        state.loading = false;
+        state.authLoading = false;
         state.user = action.payload;
-        window.location.href = "/profile";
       })
       .addCase(SignInUser.rejected, (state, action) => {
-        state.loading = false;
+        state.authLoading = false;
         state.error = action.error.message;
       });
   },

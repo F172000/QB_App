@@ -1,20 +1,21 @@
 import React from "react";
 import { Button } from "@mui/material";
 import Navbar from "./navbar";
-
+import { useSelector } from "react-redux";
 import { useMediaQuery, createTheme, ThemeProvider } from "@mui/material";
+import Mainnavbar from "./navbarmain";
 
 const theme = createTheme();
 
 export default function Home() {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
-
+  const {user}=useSelector((state)=>state.auth);
   return (
     <ThemeProvider theme={theme}>
       <div>
         <div style={{ marginTop: "130px" }} className="footerfix">
-          <Navbar />
+          {user? <Mainnavbar/>:<Navbar />}
 
           <div>
             <p

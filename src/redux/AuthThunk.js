@@ -18,7 +18,7 @@ import {
 } from "firebase/auth";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { PASSWORD_LOADER } from "./authSlice";
+import { PASSWORD_LOADER,setUser } from "./authSlice";
 export const RegisterUser =
   (Name, Email,Phone, Password, setloading) => async (dispatch) => {
     try{
@@ -64,24 +64,23 @@ export const RegisterUser =
       console.log(error.message);
     }
   };
+
 export const SignInUser = createAsyncThunk(
   "auth/signin",
   async ({ email, password }, { rejectWithValue, dispatch }) => {
     try {
       const { user } = await signInWithEmailAndPassword(auth, email, password);
-      const querySnapshot = await getDocs(
-        query(collection(db, "users"), where("uid", "==", user?.uid))
-      );
-      if (querySnapshot.empty) {
-        return rejectWithValue("No data found");
+      const q=query(collection(db, "users"), where("uid", "==", user?.uid));
+      onSnapshot(q, (querySnapshot) => {
+        const id = querySnapshot.docs[0]?.id;
+      const data = querySnapshot.docs[0]?.data();
+      if(id && data){
+        dispatch(setUser({id,...data}));
       }
-      console.log(querySnapshot,"querysnapshot");
-      if(querySnapshot.docs.length>0){
-      const id = querySnapshot.docs[0].id;
-      const data = querySnapshot.docs[0].data();
-      console.log({ id, data });
-      return { id, ...data };
+      else {
+        return rejectWithValue('User not found')
       }
+      });
     } catch (error) {
       console.log(error);
       return rejectWithValue(error.message || "Error signing in");

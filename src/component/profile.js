@@ -12,46 +12,97 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Mainnavbar from "./navbarmain";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import profile from '../assets/images/profile.jpg'
-import {
-  doc,
-  getFirestore,
-  getDoc,
-  getDocs,
-  collection,
-  where,
-  query,
-} from "firebase/firestore";
+import profile from "../assets/images/profile.jpg";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import Footer from "./footer";
-import { storage } from "../config/firebase";
+import { storage, db } from "../config/firebase";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { Spinner } from "react-bootstrap";
+import EditModal from "./EditModal";
 export default function Profile() {
-  const {user}=useSelector((state)=>state.auth);
-  console.log(user,"user");
+  const { user } = useSelector((state) => state.auth);
+  const [editName, setEditName] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  console.log(user, "user");
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-
+  const [open, setOpen] = React.useState(false);
+  const handleName = (name) => {
+    setEditName(name);
+    setOpen(true);
+  };
+  const handlePhone = (phone) => {
+    setEditPhone(phone);
+    setOpen(true);
+  };
+  const handleEmail = (email) => {
+    setEditEmail(email);
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
   const [name, setname] = useState("");
   const [phone, setphone] = useState("");
   const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null); 
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    const imageRef = ref(storage,file.name);
-    imageRef.put(file).then(() => {
-      console.log("Image uploaded successfully!");
-      imageRef.fullPath.then((url) => {
-        console.log("Image URL:", url);
-        setImageUrl(url); // Set the image URL in state
-      });
-    });
+  const [imageUrl, setImageUrl] = useState(null);
+  const [uploadImgLoader, setuploadImgLoader] = useState(false);
+  const handleNameEdit = (newName) => {
+    setname(newName);
   };
+
+  const handlePhoneEdit = (newPhone) => {
+    setphone(newPhone);
+  };
+
+  const handleEmailEdit = (newEmail) => {
+    setemail(newEmail);
+  };
+
+  const handleImageUpload = async (e) => {
+    setuploadImgLoader(true);
+    const file = e.target.files[0];
+    const imageRef = ref(storage, file.name);
+    console.log(imageRef, "imageRef");
+    try {
+      const snapshot = await uploadBytes(imageRef, file);
+      console.log(snapshot, "snapshot");
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      console.log(downloadURL, "downloadUrl");
+      const userDocRef = doc(db, "users", user?.id);
+      await setDoc(userDocRef, { image: downloadURL }, { merge: true });
+      toast.success("Image is Changed successfully");
+      setImageUrl(downloadURL);
+      setuploadImgLoader(false); // Set the image URL in state
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast.error("Error uploading image");
+      setuploadImgLoader(false);
+    }
+  };
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userDocRef = doc(db, "users", user?.id);
+        const docSnapshot = await getDoc(userDocRef);
+        if (docSnapshot.exists()) {
+          const userData = docSnapshot.data();
+          console.log("User data:", userData);
+          setname(userData.name);
+          setphone(userData.phone);
+          setemail(userData.email);
+          setImageUrl(userData.image);
+        } else {
+          console.log("User document does not exist");
+        }
+      } catch (error) {
+        console.error("Error getting user data:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
   return (
     <div style={{ marginTop: "1rem" }}>
       <Mainnavbar />
@@ -99,18 +150,21 @@ export default function Profile() {
               padding: isSmallScreen ? "0rem" : "1.25rem",
             }}
           >
-            <img
-              src={imageUrl || user?.image || profile}
-              width="100rem"
-              height={"100rem"}
-              style={{
-                borderRadius: "100px",
-                marginBottom: 10,
-                float: "center",
-                marginRight: isSmallScreen ? 0 : 50,
-              }}
-              // onChange={(e) => setprofileURL(e.target.files[0])}
-            ></img>
+            {uploadImgLoader ? (
+              <Spinner />
+            ) : (
+              <img
+                src={imageUrl || user?.image || profile}
+                width="100rem"
+                height="100rem"
+                style={{
+                  borderRadius: "100px",
+                  marginBottom: 10,
+                  float: "center",
+                  marginRight: isSmallScreen ? 0 : 50,
+                }}
+              ></img>
+            )}
 
             <Button
               className="d-flex justify-content-start"
@@ -132,29 +186,13 @@ export default function Profile() {
               component="label"
             >
               Upload Photo
-              <input hidden accept="image/*" multiple type="file"  onChange={handleImageUpload}  />
-            </Button>
-            <Button
-              className="d-flex justify-content-start"
-              variant="contained"
-              style={{
-                backgroundColor: " #fcc822",
-                color: "black",
-                textAlign: "center",
-                borderRadius: "100px",
-                font: "Outfit",
-                fontWeight: 500,
-                fontSize: "10px",
-                marginLeft: isSmallScreen ? "10px" : "30px",
-                padding: "5px,16px,5px,16px",
-                width: "80px",
-                height: "23px",
-                marginRight: "0px",
-              }}
-              component="label"
-              // onClick={(e)=>setimage(e.target.files)}
-            >
-              Upload 
+              <input
+                hidden
+                accept="image/*"
+                multiple
+                type="file"
+                onChange={handleImageUpload}
+              />
             </Button>
           </div>
 
@@ -241,6 +279,7 @@ export default function Profile() {
                           fontSize: "7.27px",
                           float: "right",
                         }}
+                        onClick={() => handleName(user?.name)}
                       >
                         Edit
                       </Button>
@@ -260,7 +299,7 @@ export default function Profile() {
                         letterSpacing: "0em",
                       }}
                     >
-                     {user?.name}
+                      {name}
                     </td>
                   </tr>
                   <tr>
@@ -299,6 +338,7 @@ export default function Profile() {
                           fontSize: "7.27px",
                           float: "right",
                         }}
+                        onClick={() => handlePhone(user?.phone)}
                       >
                         Edit
                       </Button>
@@ -317,7 +357,7 @@ export default function Profile() {
                         letterSpacing: "0em",
                       }}
                     >
-                      {user?.phone}
+                      {phone}
                     </td>
                   </tr>
                   <tr>
@@ -355,6 +395,7 @@ export default function Profile() {
                           fontSize: "7.27px",
                           float: "right",
                         }}
+                        onClick={() => handleEmail(user?.email)}
                       >
                         Edit
                       </Button>
@@ -374,68 +415,21 @@ export default function Profile() {
                         letterSpacing: "0em",
                       }}
                     >
-                      {user?.email}
+                      {email}
                     </td>
                   </tr>
-                  {/* <tr>
-                    <th
-                      style={{
-                        padding: "1rem",
-                        textAlign: "left",
-                        // borderBottom: "1px solid #00000026",
-                        font: "Outfit",
-                        fontSize: "12px",
-                        //fontWeight: 500,
-                        lineHeight: "15px",
-                        letterSpacing: "0em",
-                      }}
-                    >
-                      Password
-                    </th>
-                    <td
-                      style={{
-                        padding: "1rem",
-                        textAlign: "left",
-                        //  borderBottom: "1px solid #00000026",
-                      }}
-                      rowSpan={2}
-                    >
-                      <Button
-                        variant="contained"
-                        style={{
-                          backgroundColor: " #fcc822",
-                          color: "black",
-                          textAlign: "center",
-                          borderRadius: "72.66px",
-                          font: "Outfit",
-                          fontWeight: 500,
-                          fontSize: "7.27px",
-                          float: "right",
-                        }}
-                      >
-                        Edit
-                      </Button>
-                    </td>
-                  </tr>
-                  <tr>
-                    {" "}
-                    <td
-                      style={{
-                        padding: "1rem",
-                        textAlign: "left",
-                        //borderBottom: "1px solid #00000026",
-                        font: "Outfit",
-                        fontSize: "12px",
-                        fontWeight: 500,
-                        lineHeight: "15px",
-                        letterSpacing: "0em",
-                      }}
-                    >
-                    {user?.password||''}
-                    </td>
-                  </tr> */}
                 </tbody>
               </table>
+              <EditModal
+                open={open}
+                handleClose={handleClose}
+                editName={editName}
+                editPhone={editPhone}
+                editEmail={editEmail}
+                onNameEdit={handleNameEdit}
+                onPhoneEdit={handlePhoneEdit}
+                onEmailEdit={handleEmailEdit}
+              />
             </Card>
           </div>
         </Card>
@@ -446,5 +440,3 @@ export default function Profile() {
     </div>
   );
 }
-
-

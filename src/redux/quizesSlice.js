@@ -12,7 +12,11 @@ export const quizesSlice = createSlice({
   name: "quizes",
   initialState,
   reducers: {
-   
+    setQuizes: (state, action) => {
+      state.quizes = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -32,4 +36,5 @@ export const quizesSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
+export const {setQuizes} =quizesSlice.actions;
 export default quizesSlice.reducer;

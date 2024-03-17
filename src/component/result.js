@@ -124,7 +124,7 @@ export default function Result() {
 {loading?  <div className="col-12 justify-content-center d-flex pt-2 pb-2">
             {" "}
             <CircularProgress color="inherit" />
-          </div>: quizes.length>0?
+          </div>: quizes?.length>0?
               <TableContainer style={{ border: "1px solid black" }}>
                 <Table>
                   <TableBody>
@@ -159,7 +159,8 @@ export default function Result() {
               <div className="col-12 justify-content-center d-flex pt-2 pb-2">
             {" "}
             <p>No Quizes Yet</p>
-          </div>}
+          </div>
+          }
             </Card>
           </div>
         </div>

@@ -287,16 +287,6 @@ export default function Testknowledge() {
           <Footer />
         </div> */}
       </div>
-      {/* <style>
-        {
-          @media (max-width: 768px) {
-            .main-container {
-              padding: "10px", // Adjust the padding value as needed 
-            }
-
-          }
-        }
-      </style> */}
     </div>
   );
 }

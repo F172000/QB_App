@@ -329,7 +329,7 @@ export default function QuizPage() {
                   onClick={handleNextQuestion}
                   disabled={!selectedAnswer || timeRemaining === 0 || loader}
                 >
-                  {loader? <Spinner size="sm"/> :"Next"}
+                  {loader? <Spinner size="md"/> :"Next"}
                 </Button>
               </Box>
             </CardContent>

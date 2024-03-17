@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import upload from "../assets/images/upload (1) 1.png";
 import Mainnavbar from "./navbarmain";
+import {toast} from 'react-toastify';
 // import XLSX from "xlsx";
 import * as XLSX from 'xlsx';
 import Footer from "./footer";
@@ -21,6 +22,7 @@ import { db } from "../config/firebase";
 import { read, utils } from "xlsx";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { getFirestore, collection, addDoc } from "@firebase/firestore";
+import { Spinner } from "react-bootstrap";
 
 const style = {
   position: "absolute",
@@ -52,6 +54,7 @@ export default function Uploadquebank() {
 
   const [open, setOpen] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState("");
+  const [uploadLoader,setUploadLoader]=useState(false);
   const fileInputRef = useRef(null);
   const [selectedfile,setselectedfile]=useState(null);
   const handleOpen = () => setOpen(true);
@@ -62,6 +65,7 @@ export default function Uploadquebank() {
     fileInputRef.current.click();
   };
   const handleSave = async () => {
+    setUploadLoader(true);
     if (!selectedfile) {
       alert('Please select a file first.');
       return;
@@ -97,36 +101,22 @@ export default function Uploadquebank() {
         questions.push(questionData);
       });
   
-      await addDoc(questionBankCollection, { questions: questions });
-  
-      alert('Data imported successfully.');
+      await addDoc(questionBankCollection, { questions: questions }).then(()=>{
+        toast.success('Data Uploaded Successfully.');
+        handleClose();
+        setUploadLoader(false);
+        setselectedfile(null);
+      }).catch((error)=>{
+      toast.error(error.message);
+      setUploadLoader(false);
+      setselectedfile(null);
+      })
     };
   
     fileReader.readAsArrayBuffer(selectedfile);
   };  
   const handleFileChange = async (e) => {
     setselectedfile(e.target.files[0]);
-    // setSelectedFileName(selectedFile.name);
-
-    // Upload the file to Firebase Storage
-    // const storageRef = ref(storage, `files/${selectedFile.name}`);
-    // await uploadBytes(storageRef, selectedFile);
-
-    // Get the download URL of the uploaded file
-    // const url = await getDownloadURL(storageRef);
-
-    // Read the data from the file
-    // const response = await fetch(url);
-    // const data = await response.json();
-
-    // console.log("File uploaded and data stored in Firestore!");
-    // Store the data in Firestore
-    // const db = getFirestore();
-    // await addDoc(collection(db, "Question_Bank"), {
-    //   data: data,
-    // });
-
-    // console.log("File uploaded and data stored in Firestore!");
   };
   return (
     <div style={{ overflow: "hidden", marginTop: "100px" }}>
@@ -279,7 +269,7 @@ export default function Uploadquebank() {
                   font: "Poppins",
                   color: "black",
                   // marginRight: "10px",
-                }} onClick={handleSave}>Save</Button>
+                }} onClick={handleSave}>{uploadLoader? <Spinner size="sm"/>:"Upload"}</Button>
                 </Box>
                 {/* <Button>Save</Button> */}
               </Modal>

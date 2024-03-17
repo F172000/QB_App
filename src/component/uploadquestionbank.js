@@ -77,7 +77,9 @@ export default function Uploadquebank() {
       const workbook = XLSX.read(data, { type: 'array' });
       const sheetName = workbook.SheetNames[0];
       const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-  
+      const fileNameWithoutExtension = selectedfile.name.replace(/\.[^/.]+$/, "");
+      const questionBankName = fileNameWithoutExtension;
+      console.log(questionBankName,"questionBankName");
       const questionBankCollection = collection(db, 'questionBanks');
       const questions = [];
   
@@ -101,7 +103,7 @@ export default function Uploadquebank() {
         questions.push(questionData);
       });
   
-      await addDoc(questionBankCollection, { questions: questions }).then(()=>{
+      await addDoc(questionBankCollection, { name:questionBankName,questions: questions }).then(()=>{
         toast.success('Data Uploaded Successfully.');
         handleClose();
         setUploadLoader(false);

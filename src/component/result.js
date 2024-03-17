@@ -11,7 +11,8 @@ import {
   TableRow,
   useMediaQuery,
   createTheme,
-  Button,
+  StepLabel,
+  Button,CircularProgress
 } from "@mui/material";
 import Mainnavbar from "./navbarmain";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,7 +27,7 @@ export default function Result() {
   const location = useLocation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { quizes } = useSelector((state) => state.quizes);
+  const { quizes,loading } = useSelector((state) => state.quizes);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [correct, setCorrect] = useState(0);
   const [total, settotal] = useState(0);
@@ -120,7 +121,10 @@ export default function Result() {
               >
                 Previous Result
               </Typography>
-
+{loading?  <div className="col-12 justify-content-center d-flex pt-2 pb-2">
+            {" "}
+            <CircularProgress color="inherit" />
+          </div>: quizes.length>0?
               <TableContainer style={{ border: "1px solid black" }}>
                 <Table>
                   <TableBody>
@@ -151,6 +155,11 @@ export default function Result() {
                   </TableBody>
                 </Table>
               </TableContainer>
+              :
+              <div className="col-12 justify-content-center d-flex pt-2 pb-2">
+            {" "}
+            <p>No Quizes Yet</p>
+          </div>}
             </Card>
           </div>
         </div>

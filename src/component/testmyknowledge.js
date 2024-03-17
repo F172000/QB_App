@@ -26,6 +26,7 @@ import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
 import Mainnavbar from "./navbarmain";
 import {getQuestionBanks} from '../redux/questionBankThunk';
 import {getQuizQuestions} from '../redux/quizQuestionThunk';
+import { resetQuestionsAnswers,resetQuizQuestions } from "../redux/quizQuestionSlice";
 import { useSelector,useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 const theme = createTheme();
@@ -43,6 +44,8 @@ export default function Testknowledge() {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   useEffect(()=>{
    dispatch(getQuestionBanks());
+   dispatch(resetQuestionsAnswers());
+   dispatch(resetQuizQuestions());
   },[])
   const handleSearch = () => {
     // Implement your search logic here
@@ -188,7 +191,7 @@ export default function Testknowledge() {
                 borderRadius: "20px",
                 backgroundColor: "#D4ECFF",
                 boxShadow:  SelectedQuestionBank === item?.id
-                ? "0px 5px 5px 5px #D9ECFF80"
+                ? "0px 5px 5px 5px #F3F5D2"
                 : "0px 4px 4px 0px #D9ECFF80",
                 "@media (max-width: 768px)": {
                   padding: "0", // Remove padding for smaller screens

@@ -28,9 +28,11 @@ import {
   resetQuizQuestions,
   resetQuestionsAnswers,
 } from "../redux/quizQuestionSlice";
+import { Spinner } from "react-bootstrap";
 
 export default function QuizPage() {
   const dispatch = useDispatch();
+  const [loader,setLoader]=useState(false);
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const { quizQuestions, answers } = useSelector(
@@ -74,6 +76,7 @@ export default function QuizPage() {
     if (currentQuestion < quizQuestions.length - 1) {
       setCurrentQuestion((prevQuestion) => prevQuestion + 1);
     } else {
+      setLoader(true);
       const QuizCollection = collection(db, "Quizes");
       const result = await addDoc(QuizCollection, {
         correctAnswers: updatedCorrectAnswers,
@@ -82,6 +85,7 @@ export default function QuizPage() {
         createdAt: serverTimestamp(),
       });
       if (result) {
+        setLoader(false);
         console.log(givenAnswers, "given");
         navigate("/Result", {
           state: {
@@ -323,9 +327,9 @@ export default function QuizPage() {
                 <Button
                   variant="contained"
                   onClick={handleNextQuestion}
-                  disabled={!selectedAnswer || timeRemaining === 0}
+                  disabled={!selectedAnswer || timeRemaining === 0 || loader}
                 >
-                  Next
+                  {loader? <Spinner size="sm"/> :"Next"}
                 </Button>
               </Box>
             </CardContent>

@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+.correctLabel{
+  border-radius: 5% !important;
+  background-color: rgb(23, 128, 93);
+  margin-top: 1rem;
+  width: fit-content;
+  padding: 10px 10px;
+  color: white;
+}
+.wrongLabel{
+  border-radius: 5% !important;
+  background-color: rgb(176, 55, 55);
+  margin-top: 1rem;
+  width: fit-content;
+  padding: 10px 10px;
+  color: white;
+}

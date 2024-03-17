@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Admin from "./layouts/Admin";
 import Auth from "./layouts/Auth";
 import routes from "./routes";
+import './App.css';
 import {  Route,BrowserRouter,Routes,Navigate } from "react-router-dom";
 function App() {
   return (

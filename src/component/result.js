@@ -14,33 +14,28 @@ import {
   Button,
 } from "@mui/material";
 import Mainnavbar from "./navbarmain";
-import { UseDispatch, useDispatch, useSelector } from "react-redux";
-import { useLocation,useNavigate } from "react-router-dom";
-import {setAnswerState, resetQuizQuestions} from '../redux/quizQuestionSlice'
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { setAnswerState } from "../redux/quizQuestionSlice";
 import Footer from "./footer";
 import { getQuizes } from "../redux/quizesThunk";
-const tableData = [
-  { date: "15-03-23", score: "3/10" },
-  { date: "27-10-23", score: "8/10" },
-  { date: "01-01-24", score: "7/10" },
-];
 
 const theme = createTheme();
 export default function Result() {
-  const navigate=useNavigate();
-  const location=useLocation();
-  const dispatch=useDispatch();
-  const {user}=useSelector((state)=>state.auth);
-  const {quizes}=useSelector((state)=>state.quizes);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const { quizes } = useSelector((state) => state.quizes);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const [correct,setCorrect]=useState(0);
-  const [total,settotal]=useState(0);
-  useEffect(()=>{
-dispatch(getQuizes(user?.id));
-  },[])
+  const [correct, setCorrect] = useState(0);
+  const [total, settotal] = useState(0);
   useEffect(() => {
-    const { correctAnswers,totalQuestions,Answers } = location.state;
-     dispatch(setAnswerState(Answers));
+    dispatch(getQuizes(user?.id));
+  }, []);
+  useEffect(() => {
+    const { correctAnswers, totalQuestions, Answers } = location.state;
+    dispatch(setAnswerState(Answers));
     setCorrect(correctAnswers);
     settotal(totalQuestions);
   }, [location.state]);
@@ -139,7 +134,7 @@ dispatch(getQuizes(user?.id));
 
                     {/* Data Rows */}
 
-                    {quizes?.slice(0,3)?.map((row, index) => (
+                    {quizes?.slice(0, 3)?.map((row, index) => (
                       <TableRow key={index} style={{ borderBottom: "0px" }}>
                         <TableCell
                           component="th"
@@ -148,7 +143,9 @@ dispatch(getQuizes(user?.id));
                         >
                           {row.createdAt}
                         </TableCell>
-                        <TableCell align="right">{row.correctAnswers}/{row.totalQuestions}</TableCell>
+                        <TableCell align="right">
+                          {row.correctAnswers}/{row.totalQuestions}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -173,7 +170,7 @@ dispatch(getQuizes(user?.id));
               width: "180px",
               height: "60px",
             }}
-            onClick={()=>navigate('/Quiz')}
+            onClick={() => navigate("/Quiz")}
           >
             View Results
           </Button>

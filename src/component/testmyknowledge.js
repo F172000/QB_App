@@ -25,6 +25,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
 import Mainnavbar from "./navbarmain";
 import {getQuestionBanks} from '../redux/questionBankThunk';
+import {getQuizQuestions} from '../redux/quizQuestionThunk';
 import { useSelector,useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 const theme = createTheme();
@@ -52,7 +53,7 @@ export default function Testknowledge() {
     // Log the filtered rows or update the state as needed
     // console.log("Filtered Rows:", filteredRows);
   };
-  const handleTest=()=>{
+  const handleTest=async()=>{
     const selectedBank = Banks.find(bank => bank.id === SelectedQuestionBank);
     if (selectedBank) {
       const questions = selectedBank.questions;
@@ -75,7 +76,8 @@ export default function Testknowledge() {
   
         // Shuffle the selected questions
         const shuffledQuestions = selectedQuestions.sort(() => Math.random() - 0.5);
-        navigate("/Quiz", { state: { questions: shuffledQuestions } });
+           await dispatch(getQuizQuestions(shuffledQuestions));
+        navigate("/Quiz");
       } else {
         toast.error("Invalid number of questions to select.");
       }

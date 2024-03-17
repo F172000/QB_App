@@ -15,7 +15,8 @@ import {
 } from "@mui/material";
 import Mainnavbar from "./navbarmain";
 import { UseDispatch, useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation,useNavigate } from "react-router-dom";
+import {setAnswerState, resetQuizQuestions} from '../redux/quizQuestionSlice'
 import Footer from "./footer";
 import { getQuizes } from "../redux/quizesThunk";
 const tableData = [
@@ -26,6 +27,7 @@ const tableData = [
 
 const theme = createTheme();
 export default function Result() {
+  const navigate=useNavigate();
   const location=useLocation();
   const dispatch=useDispatch();
   const {user}=useSelector((state)=>state.auth);
@@ -37,7 +39,8 @@ export default function Result() {
 dispatch(getQuizes(user?.id));
   },[])
   useEffect(() => {
-    const { correctAnswers,totalQuestions } = location.state;
+    const { correctAnswers,totalQuestions,Answers } = location.state;
+     dispatch(setAnswerState(Answers));
     setCorrect(correctAnswers);
     settotal(totalQuestions);
   }, [location.state]);
@@ -170,6 +173,7 @@ dispatch(getQuizes(user?.id));
               width: "180px",
               height: "60px",
             }}
+            onClick={()=>navigate('/Quiz')}
           >
             View Results
           </Button>

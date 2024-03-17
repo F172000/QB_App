@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 import Mainnavbar from "./navbarmain";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import profile from '../assets/images/profile.jpg'
@@ -25,7 +26,7 @@ import {
   query,
 } from "firebase/firestore";
 import Footer from "./footer";
-import { db } from "../config/firebase";
+import { storage } from "../config/firebase";
 import { useSelector } from "react-redux";
 export default function Profile() {
   const {user}=useSelector((state)=>state.auth);
@@ -37,9 +38,20 @@ export default function Profile() {
   const [phone, setphone] = useState("");
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
-  const [image,setimage]=useState(null);
+  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null); 
 
-
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    const imageRef = ref(storage,file.name);
+    imageRef.put(file).then(() => {
+      console.log("Image uploaded successfully!");
+      imageRef.fullPath.then((url) => {
+        console.log("Image URL:", url);
+        setImageUrl(url); // Set the image URL in state
+      });
+    });
+  };
   return (
     <div style={{ marginTop: "1rem" }}>
       <Mainnavbar />
@@ -88,7 +100,7 @@ export default function Profile() {
             }}
           >
             <img
-              src={user?.image || profile}
+              src={imageUrl || user?.image || profile}
               width="100rem"
               height={"100rem"}
               style={{
@@ -118,10 +130,31 @@ export default function Profile() {
                 marginRight: "0px",
               }}
               component="label"
-              onClick={(e)=>setimage(e.target.files)}
             >
               Upload Photo
-              <input hidden accept="image/*" multiple type="file"  />
+              <input hidden accept="image/*" multiple type="file"  onChange={handleImageUpload}  />
+            </Button>
+            <Button
+              className="d-flex justify-content-start"
+              variant="contained"
+              style={{
+                backgroundColor: " #fcc822",
+                color: "black",
+                textAlign: "center",
+                borderRadius: "100px",
+                font: "Outfit",
+                fontWeight: 500,
+                fontSize: "10px",
+                marginLeft: isSmallScreen ? "10px" : "30px",
+                padding: "5px,16px,5px,16px",
+                width: "80px",
+                height: "23px",
+                marginRight: "0px",
+              }}
+              component="label"
+              // onClick={(e)=>setimage(e.target.files)}
+            >
+              Upload 
             </Button>
           </div>
 
@@ -413,3 +446,5 @@ export default function Profile() {
     </div>
   );
 }
+
+

@@ -52,3 +52,20 @@
   padding: 10px 10px;
   color: white;
 }
+
+.swiper-button-prev::after,
+.swiper-button-next::after{
+  color: white;
+  background-color: #615b5b;
+  padding: 10px 12px 10px 12px;
+  border-radius: 50%;
+  font-size: 17px !important;
+  font-weight: bold;
+}
+
+.swiper-pagination-bullet-active{
+  background: #ded87f !important;
+}
+.swiper-scrollbar-drag{
+  background: #ded87f !important;
+}

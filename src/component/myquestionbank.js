@@ -18,97 +18,41 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
+import { db } from "../config/firebase";
+import { deleteDoc, doc } from "firebase/firestore";
+import {toast} from 'react-toastify';
 import SearchIcon from "@mui/icons-material/Search";
 import Navbar from "./navbar";
 import Mainnavbar from "./navbarmain";
 import footor from "../assets/images/footor.png";
 
 import Footer from "./footer";
+import { useDispatch,useSelector } from "react-redux";
+import { getQuestionBanks } from "../redux/questionBankThunk";
 
-const columns = [
-  {
-    id: "checkbox",
-    minWidth: 100,
-    align: "center",
-    format: (value) => <Checkbox color="primary" />,
-  },
-  { id: "questionBankName", label: "Question Bank Name", minWidth: 800 },
-  {
-    id: "action",
-    label: "Action",
-    minWidth: 200,
-    align: "center",
-    format: (value, index) => (
-      <div>
-        <Stack direction="row" spacing={1}>
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            style={{
-              width: "78px",
-              height: "26px",
-              marginLeft: "15px",
-              borderRadius: "4px",
-              backgroundColor: "#FCC822",
-              color: "#000",
-            }}
-            onClick={() => handleEdit(index)}
-          >
-            Edit
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            size="small"
-            style={{
-              marginLeft: "10px",
-              width: "89px",
-              height: "26px",
-              borderRadius: "4px",
-              backgroundColor: "#FF000F",
-              color: "#000",
-            }}
-            onClick={() => handleDelete(index)}
-          >
-            Delete
-          </Button>
-        </Stack>
-      </div>
-    ),
-  },
-];
-
-const rows = [
-  { questionBankName: "KnowledgeQuest", action: "2" },
-  { questionBankName: "QuizMasterPro", action: "2" },
-  { questionBankName: "BrainTeasureHub", action: "2" },
-  { questionBankName: "LearnAndTestHub", action: "2" },
-  { questionBankName: "TrivalTreasury", action: "2" },
-  { questionBankName: "InsightFullQuizzes", action: "2" },
-  { questionBankName: "WisdomChallenge", action: "2" },
-  { questionBankName: "SmartQuizVault", action: "2" },
-];
-
-const handleEdit = (id) => {
-  //  console.log(Editing row with id ${id});
-};
-
-const handleDelete = (index) => {
-  // console.log(Deleting row with index ${index});
-};
 
 export default function Questionbank() {
+  const dispatch=useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
+  const {Banks}=useSelector((state)=>state.questionBanks);
+  console.log(Banks,"Bank");
   const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   const handleSearch = () => {
-    const filteredRows = rows.filter((row) =>
+    const filteredRows = Banks?.filter((row) =>
       row.questionBankName.toLowerCase().includes(searchTerm.toLowerCase())
     );
     console.log("Filtered Rows:", filteredRows);
   };
-
+   const handleDelete=async(id)=>{
+    const DocRef = doc(db, "questionBanks", id);
+    await deleteDoc(DocRef).then(()=>{
+    toast.success("Question Bank Deleted Successfully");
+    dispatch(getQuestionBanks());
+    }).catch((error)=>{
+     console.log(error.message);
+    })
+   }
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -180,55 +124,29 @@ export default function Questionbank() {
             </div>
           </div>
           <Divider color="#E0E0E0" />
-          <TableContainer>
-            <Table stickyHeader>
-              <TableHead>
-                <TableRow>
-                  {columns.map((column) => (
-                    <TableCell
-                      key={column.id}
-                      align={column.align}
-                      style={{
-                        minWidth: column.minWidth,
-                        fontWeight: 700,
-                        fontSize: "14px",
-                        paddingBottom: "13px",
-                        paddingRight: "0px",
-                        paddingTop: "13px",
-                        letterSpacing: "-0.6%",
-                        paddingLeft: "0px",
-                      }}
-                    >
-                      {column.label}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row, index) => (
-                  <TableRow key={index}>
-                    {columns.map((column) => (
-                      <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{
-                          fontWeight: 400,
-                          fontSize: "14px",
-                          letterSpacing: "-0.6%",
-                          padding: "1px",
-                          height: "30px",
-                        }}
-                      >
-                        {column.format
-                          ? column.format(row[column.id])
-                          : row[column.id]}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Question Bank Name</TableCell>
+            <TableCell align="right">Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {Banks.map((row,index) => (
+            <TableRow
+              key={index}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {row.name}
+              </TableCell>
+              <TableCell align="right"><Button variant="contained" color="error" onClick={()=>handleDelete(row?.id)}>Delete</Button></TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
         </Paper>
       </div>
       <div>

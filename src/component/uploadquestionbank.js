@@ -241,15 +241,15 @@ export default function Uploadquebank() {
               >
                 <Box sx={style}>
                   <Typography variant="h5" component="h2" gutterBottom>
-                    Add New Complaint Ticket
+                   Upload Question Bank
                   </Typography>
-                  {/* <input
+                  <input
                     ref={fileInputRef}
                     type="file"
                     accept=".xls, .xlsx"
                     onChange={handleFileChange}
                     style={{ display: "none" }}
-                  /> */}
+                  />
                   <Button onClick={handleFileUpload}>Choose File</Button>
                   <span style={{color:"blue"}}>{selectedfile?.name}</span>
                   <VisuallyHiddenInput

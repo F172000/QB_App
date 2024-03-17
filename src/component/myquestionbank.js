@@ -29,12 +29,14 @@ import footor from "../assets/images/footor.png";
 import Footer from "./footer";
 import { useDispatch,useSelector } from "react-redux";
 import { getQuestionBanks } from "../redux/questionBankThunk";
+import { RowingTwoTone } from "@mui/icons-material";
 
 
 export default function Questionbank() {
   const dispatch=useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
   const {Banks}=useSelector((state)=>state.questionBanks);
+  const [selected,setselected]=useState('');
   console.log(Banks,"Bank");
   const [isSearchVisible, setIsSearchVisible] = useState(false);
 
@@ -124,12 +126,14 @@ export default function Questionbank() {
             </div>
           </div>
           <Divider color="#E0E0E0" />
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper} style={{padding:'0px 3rem'}}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
+          <TableCell padding="checkbox">
+                     </TableCell>
             <TableCell>Question Bank Name</TableCell>
-            <TableCell align="right">Actions</TableCell>
+            <TableCell align="right" >Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -138,6 +142,14 @@ export default function Questionbank() {
               key={index}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
+              <TableCell padding="checkbox">
+                      <Checkbox
+                        color="primary"
+                        checked={selected}
+                        inputProps={{
+                          'aria-labelledby': row.id,
+                        }}
+                      /></TableCell>
               <TableCell component="th" scope="row">
                 {row.name}
               </TableCell>

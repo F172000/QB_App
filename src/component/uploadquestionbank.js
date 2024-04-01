@@ -23,6 +23,7 @@ import { read, utils } from "xlsx";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { getFirestore, collection, addDoc } from "@firebase/firestore";
 import { Spinner } from "react-bootstrap";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -50,6 +51,7 @@ const VisuallyHiddenInput = styled("input")({
 const theme = createTheme();
 
 export default function Uploadquebank() {
+  const {user}=useSelector((state)=>state.auth);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [open, setOpen] = useState(false);
@@ -103,7 +105,7 @@ export default function Uploadquebank() {
         questions.push(questionData);
       });
   
-      await addDoc(questionBankCollection, { name:questionBankName,questions: questions }).then(()=>{
+      await addDoc(questionBankCollection, { name:questionBankName,questions: questions,username:user?.name,userID:user?.id }).then(()=>{
         toast.success('Data Uploaded Successfully.');
         handleClose();
         setUploadLoader(false);

@@ -38,7 +38,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
 import Mainnavbar from "./navbarmain";
-import { getQuestionBanks } from "../redux/questionBankThunk";
+import { getQuestionBanks,getQuestionBanksBySearchTerm } from "../redux/questionBankThunk";
 import { getQuizQuestions } from "../redux/quizQuestionThunk";
 import {
   resetQuestionsAnswers,
@@ -64,14 +64,28 @@ export default function Testknowledge() {
     dispatch(resetQuestionsAnswers());
     dispatch(resetQuizQuestions());
   }, []);
-  const handleSearch = () => {
-    // Implement your search logic here
-    // Filter the rows based on the searchTerm
-    // const filteredRows = rows.filter((row) =>
-    //   row.questionBankName.toLowerCase().includes(searchTerm.toLowerCase())
-    // );
-    // Log the filtered rows or update the state as needed
-    // console.log("Filtered Rows:", filteredRows);
+  const debounce = (func, delay) => {
+    let timer;
+    return function (...args) {
+      const context = this;
+      clearTimeout(timer);
+      timer = setTimeout(() => func.apply(context, args), delay);
+    };
+  };
+  const handleSearch = (searchTerm) => {
+    console.log('Searching for:', searchTerm);
+    if(searchTerm===''){
+      dispatch(getQuestionBanks());
+    }
+    else{
+    dispatch(getQuestionBanksBySearchTerm(searchTerm));
+    }
+  };
+  const debouncedSearch = debounce(handleSearch, 300); // Adjust delay as needed (e.g., 300ms)
+  const handleChange = (event) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+    debouncedSearch(value);// Trigger debounced search
   };
   const handleTest = async () => {
     const selectedBank = Banks.find((bank) => bank.id === SelectedQuestionBank);
@@ -154,7 +168,7 @@ export default function Testknowledge() {
                     style={{ color: "black" }}
                     placeholder="Search..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) => handleChange(e)}
                     onBlur={() => setIsSearchVisible(false)}
                     autoFocus
                   />
@@ -263,9 +277,13 @@ export default function Testknowledge() {
                             <div
                               sx={{ textAlign: "center", paddingTop: "5px" }}
                             >
-                              <Typography variant="h6" gutterBottom>
-                                Question Bank {index + 1}
-                              </Typography>
+                              {/* <Typography variant="h5" gutterBottom>
+                               {item?.name}
+                              </Typography> */}
+                               <h6>
+                               {item?.name}
+                              </h6>
+                              <small>{item?.username||""}</small>
                               <Typography variant="body2" color="textSecondary">
                                 {item?.questions?.length} Questions
                               </Typography>

@@ -14,7 +14,7 @@ import { db, auth } from "../config/firebase";
 import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,signOut
 } from "firebase/auth";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
@@ -88,13 +88,18 @@ export const SignInUser = createAsyncThunk(
   }
 );
 export const SignOutUser = () => async (dispatch) => {
-  try {
-    const result = localStorage.clear();
-    console.log(result);
+    await signOut(auth)
+    .then(() => {
+    // Dispatch the action to reset Redux store
+    localStorage.clear();
+    // dispatch(resetStore());
     window.location.href = "/login";
-  } catch (error) {
-    console.log(error.message);
-  }
+    // history.push('/');
+    console.log('User signed out');
+  })
+  .catch((error) => {
+    console.error(error.message);
+  });
 };
 export const ResetPassword = (email) => async (dispatch) => {
   try {

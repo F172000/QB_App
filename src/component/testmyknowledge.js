@@ -51,7 +51,7 @@ const theme = createTheme();
 export default function Testknowledge() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [numberOfQuestions, setNumberOfQuestions] = useState(0);
+  const [numberOfQuestions, setNumberOfQuestions] = useState("");
   console.log(numberOfQuestions, "no of questions");
   const { Banks, loading } = useSelector((state) => state.questionBanks);
   const [SelectedQuestionBank, setSelectedQuestionBank] = useState("");
@@ -314,10 +314,10 @@ export default function Testknowledge() {
               //fullWidth
               // id="outlined-basic"
               // label="Number of Questions"
-              placeholder="Enter number of questions..."
+              placeholder="Enter number of questions to test your knowledge..."
               type="number"
               value={numberOfQuestions}
-              onChange={(e) => setNumberOfQuestions(e.target.value)}
+              onChange={(e) => setNumberOfQuestions(Number(e.target.value))}
               style={{
                 width: "80%",
                 paddingBottom: "10px",

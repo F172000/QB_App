@@ -34,8 +34,8 @@ export default function Home() {
                 maxWidth: "100%",
               }}
             >
-              QBApp is a website designed to support your learning. Either
-              upload your own question bank, or have our AI produce one for you.
+              QBApp is a website designed to support your learning.<br/><br/> Either
+              upload your own question bank, or have our AI produce one for you. <br/><br/>
               Research shows that answering questions is highly effective as a
               learning technique. It is the most effective way to prepare for
               any examination.

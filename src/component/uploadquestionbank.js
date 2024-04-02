@@ -52,6 +52,7 @@ const theme = createTheme();
 
 export default function Uploadquebank() {
   const {user}=useSelector((state)=>state.auth);
+  console.log(user,"USer>>>>>>>");
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [open, setOpen] = useState(false);
@@ -70,6 +71,7 @@ export default function Uploadquebank() {
     setUploadLoader(true);
     if (!selectedfile) {
       alert('Please select a file first.');
+      setUploadLoader(false);
       return;
     }
   
@@ -91,6 +93,12 @@ export default function Uploadquebank() {
                 'Option D': optionD, 'Correct Answer(s)': correctAnswer,
                 'Difficulty Level': difficultyLevel, 'Category': category,
                 'Explanation': explanation } = row;
+
+                if (Object.values(row).some(value => value === undefined || value === null)) {
+                  setUploadLoader(false);
+                  toast.error('One or more fields in the Excel data are empty or undefined.')
+                  return;
+                }
   
         const questionData = {
           questionId: questionId,
@@ -104,8 +112,15 @@ export default function Uploadquebank() {
   
         questions.push(questionData);
       });
-  
-      await addDoc(questionBankCollection, { name:questionBankName,questions: questions,username:user?.name,userID:user?.id }).then(()=>{
+      if (questions.length === 0) {
+        setUploadLoader(false);
+        toast.error('No valid data found in the Excel file.')
+        return;
+      }
+     console.log(questions,"questionData>>>>>>>");
+     const name=user?.name;
+     const id=user?.id;
+      await addDoc(questionBankCollection, { name:questionBankName,questions: questions,username:name,userID:id }).then(()=>{
         toast.success('Data Uploaded Successfully.');
         handleClose();
         setUploadLoader(false);
@@ -252,12 +267,12 @@ export default function Uploadquebank() {
                     onChange={handleFileChange}
                     style={{ display: "none" }}
                   />
-                  <Button onClick={handleFileUpload}>Choose File</Button>
+                  <Button onClick={handleFileUpload}>Choose .xlx  or .csv file</Button>
                   <span style={{color:"blue"}}>{selectedfile?.name}</span>
                   <VisuallyHiddenInput
                     ref={fileInputRef}
                     type="file"
-                    accept=".xls, .xlsx"
+                    accept=".xls, .xlsx, .csv"
                     onChange={handleFileChange}
                   />
                   <hr/>
@@ -267,13 +282,13 @@ export default function Uploadquebank() {
                   //   " 0px 10.450244903564453px 23.22276496887207px -6.966829299926758px #FBE18F",
                   fontSize: "13px",
                   lineHeight: "14px",
-                  width: "71px",
+                  // width: "71px",
                   height: "37px",
                   fontWeight: 400,
                   font: "Poppins",
                   color: "black",
                   // marginRight: "10px",
-                }} onClick={handleSave}>{uploadLoader? <Spinner size="sm"/>:"Upload"}</Button>
+                }} onClick={handleSave}>{uploadLoader? <Spinner size="sm"/>:"Click here to upload"}</Button>
                 </Box>
                 {/* <Button>Save</Button> */}
               </Modal>

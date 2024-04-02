@@ -70,7 +70,7 @@ export default function Uploadquebank() {
   const handleSave = async () => {
     setUploadLoader(true);
     if (!selectedfile) {
-      alert('Please select a file first.');
+      toast.warning('Please select a file first.');
       setUploadLoader(false);
       return;
     }

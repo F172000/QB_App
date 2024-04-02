@@ -1,5 +1,5 @@
 import {
-    getDocs,
+    getDocs,orderBy,
     collection,where,query,onSnapshot
   } from "firebase/firestore";
   import { db} from "../config/firebase";
@@ -14,7 +14,7 @@ export const getQuizes = createAsyncThunk(
       console.log(Id);
 
       // Create a query to get documents where "userId" is equal to Id
-      const q = query(collection(db, "Quizes"), where("userId", "==", Id));
+      const q = query(collection(db, "Quizes"), where("userId", "==", Id),orderBy("createdAt", "desc"));
 
       // Listen for real-time changes using onSnapshot
       const unsubscribe = onSnapshot(q, (querySnapshot) => {

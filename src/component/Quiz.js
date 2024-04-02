@@ -182,7 +182,14 @@ export default function QuizPage() {
                   quizQuestions[currentQuestion]?.correctAnswer ? (
                   <span className="correctLabel">Correct Answer</span>
                   ) : (
+                    <>
                     <span className="wrongLabel">Wrong Answer</span>
+                    <div className="justify-content-start mt-2">
+                    <b className="text-success">Correct Answer is: {quizQuestions[currentQuestion]?.correctAnswer}</b><br/>
+                    <b>Explanation</b><br/>
+                    <small>{quizQuestions[currentQuestion]?.explanation}</small>
+                    </div>
+                    </>
                   )}
                 </RadioGroup>
               </FormControl>

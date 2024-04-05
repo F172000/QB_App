@@ -21,8 +21,10 @@ import { storage, db } from "../config/firebase";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { Spinner } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import EditModal from "./EditModal";
 export default function Profile() {
+  const navigate=useNavigate();
   const { user } = useSelector((state) => state.auth);
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
@@ -194,6 +196,20 @@ export default function Profile() {
                 onChange={handleImageUpload}
               />
             </Button>
+            <Button  style={{
+                backgroundColor: " #fcc822",
+                color: "black",
+                textAlign: "center",
+                borderRadius: "95px",
+                font: "Outfit",
+                fontWeight: 500,
+                fontSize: "10px",
+                marginLeft: isSmallScreen ? "10px" : "30px",
+                padding: "10px,17px,10px,17px",
+                // width: "120px",
+                height: "23px",
+                marginRight: "0px",
+              }} className="mx-5" onClick={()=>navigate('/list_of_question_banks')}>List of All Question Banks</Button>
           </div>
 
           <div className="row">

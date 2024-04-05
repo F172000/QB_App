@@ -1,11 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { getQuestionBanks } from "./questionBankThunk";
+import { getQuestionBanks,getQuestionBanksById  } from "./questionBankThunk";
 
 const initialState = {
   Banks: null,
   loading: false,
   error: null,
+  userBanks:null,
+  userbankloading:false,
+  usererror:false
 };
 
 export const questionBankSlice = createSlice({
@@ -27,6 +30,18 @@ export const questionBankSlice = createSlice({
       .addCase(getQuestionBanks.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(getQuestionBanksById.pending, (state) => {
+        state.userbankloading = true;
+        state.usererror = null;
+      })
+      .addCase(getQuestionBanksById.fulfilled, (state, action) => {
+        state.userbankloading = false;
+        state.userBanks = action.payload;
+      })
+      .addCase(getQuestionBanksById.rejected, (state, action) => {
+        state.userbankloading = false;
+        state.usererror = action.error.message;
       });
   },
 });

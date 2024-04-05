@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
   Checkbox,
@@ -28,21 +28,16 @@ import footor from "../assets/images/footor.png";
 
 import Footer from "./footer";
 import { useDispatch,useSelector } from "react-redux";
-import { getQuestionBanksById,getUserQuestionBanksBySearchTerm} from "../redux/questionBankThunk";
+import { getQuestionBanks,getQuestionBanksBySearchTerm } from "../redux/questionBankThunk";
 
 
-export default function Questionbank() {
+export default function QuestionBankList() {
   const dispatch=useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
-  const {user}=useSelector((state)=>state.auth);
-  console.log(user,"user");
-  const {userBanks}=useSelector((state)=>state.questionBanks);
+  const {Banks}=useSelector((state)=>state.questionBanks);
   const [selected,setselected]=useState('');
-  console.log(userBanks,"Bank");
+  console.log(Banks,"Bank");
   const [isSearchVisible, setIsSearchVisible] = useState(false);
-  useEffect(()=>{
-dispatch(getQuestionBanksById(user?.id));
-  },[]);
 
   const debounce = (func, delay) => {
     let timer;
@@ -55,16 +50,15 @@ dispatch(getQuestionBanksById(user?.id));
   const handleSearch = (searchTerm) => {
     console.log('Searching for:', searchTerm);
     if(searchTerm===''){
-      dispatch(getQuestionBanksById(user?.id));
+      dispatch(getQuestionBanks());
     }
     else{
-    dispatch(getUserQuestionBanksBySearchTerm({ id: user?.id, searchTerm: searchTerm }));
+    dispatch(getQuestionBanksBySearchTerm(searchTerm));
     }
   };
-  const debouncedSearch = debounce(handleSearch, 300);
+  const debouncedSearch = debounce(handleSearch, 300); // Adjust delay as needed (e.g., 300ms)
   const handleChange = (event) => {
     const value = event.target.value;
-    console.log(value,"handlechange>>>>>>>");
     setSearchTerm(value);
     debouncedSearch(value);// Trigger debounced search
   };
@@ -72,7 +66,7 @@ dispatch(getQuestionBanksById(user?.id));
     const DocRef = doc(db, "questionBanks", id);
     await deleteDoc(DocRef).then(()=>{
     toast.success("Question Bank Deleted Successfully");
-    dispatch(getQuestionBanksById(user?.id));
+    dispatch(getQuestionBanks());
     }).catch((error)=>{
      console.log(error.message);
     })
@@ -99,7 +93,7 @@ dispatch(getQuestionBanksById(user?.id));
             fontSize: isSmallScreen ? "1.7rem" : "2rem", // Relative font size
           }}
         >
-          My Question Bank
+         List of Question Banks
         </Typography>
         <Paper
           style={{
@@ -125,7 +119,7 @@ dispatch(getQuestionBanksById(user?.id));
                 marginLeft: isSmallScreen ? 0 : 40,
               }}
             >
-              My Question Bank
+              Question Banks
             </Typography>
             <div style={{ display: "flex", alignItems: "center" }}>
               {isSearchVisible && (
@@ -135,8 +129,8 @@ dispatch(getQuestionBanksById(user?.id));
                     fullWidth
                     style={{ color: "black", marginTop: "10px" }}
                     placeholder="Search..."
-                  value={searchTerm}
-                  onChange={(e)=>handleChange(e)}
+                    value={searchTerm}
+                    onChange={(e) => handleChange(e)}
                     onBlur={() => setIsSearchVisible(false)}
                     autoFocus
                   />
@@ -155,11 +149,12 @@ dispatch(getQuestionBanksById(user?.id));
           {/* <TableCell padding="checkbox">
                      </TableCell> */}
             <TableCell style={{ fontWeight: 'bold' }}>Question Bank Name</TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="right" >Actions</TableCell>
+            <TableCell style={{ fontWeight: 'bold' }}  >Total Questions</TableCell>
+            <TableCell style={{ fontWeight: 'bold' }}  >Created By</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {userBanks?.map((row,index) => (
+          {Banks?.map((row,index) => (
             <TableRow
               key={index}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -172,10 +167,13 @@ dispatch(getQuestionBanksById(user?.id));
                           'aria-labelledby': row?.id,
                         }}
                       /></TableCell> */}
-              <TableCell  component="th" scope="row">
+              <TableCell component="th" scope="row">
                 {row?.name}
               </TableCell>
-              <TableCell align="right"><Button variant="contained" color="error" onClick={()=>handleDelete(row?.id)}>Delete</Button></TableCell>
+              <TableCell component="th" scope="row">
+                {row?.questions?.length}
+              </TableCell>
+              <TableCell  component="th" scope="row" >{row?.username}</TableCell>
             </TableRow>
           ))}
         </TableBody>

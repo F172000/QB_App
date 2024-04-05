@@ -14,6 +14,7 @@ import Testknowledge from "./component/testmyknowledge";
 import Result from "./component/result";
 import Aibank from "./component/aiquestionbank";
 import PaymentDetails from "./component/PaymentDetails";
+import QuestionBankList from "./component/QuestionBankList";
 
 var routes = [
   {
@@ -94,6 +95,11 @@ var routes = [
   {
     path: "/Ai-bank",
     component: Aibank,
+    layout: "admin",
+  },
+  {
+    path: "/list_of_question_banks",
+    component: QuestionBankList,
     layout: "admin",
   },
 ];
